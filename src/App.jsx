@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import "./App.scss";
-import { Login, Register } from "./components/login/index";
+import { Login, Register, InitialView } from "./components";
+import loginImg from "./images/logoCompletoN.png";
 
 class App extends React.Component {
   constructor(props) {
@@ -17,7 +18,6 @@ class App extends React.Component {
 
   changeState() {
     const { isLogginActive } = this.state;
-
     if (isLogginActive) {
       this.rightSide.classList.remove("right");
       this.rightSide.classList.add("left");
@@ -30,14 +30,14 @@ class App extends React.Component {
 
   render() {
     const { isLogginActive } = this.state;
-    const current = isLogginActive ? "Register" : "Login";
+    const current = isLogginActive ? "Registrarse" : "Iniciar sesión";
     const currentActive = isLogginActive ? "login" : "register";
     return (
         <div className="App">
           <div className="login">
             <div className="container" ref={ref => (this.container = ref)}>
               {isLogginActive && (
-                  <Login containerRef={ref => (this.current = ref)} />
+                  <Login containerRef={ref => (this.current = ref)}/>
               )}
               {!isLogginActive && (
                   <Register containerRef={ref => (this.current = ref)} />
@@ -68,5 +68,7 @@ const RightSide = props => {
       </div>
   );
 };
+
+
 
 export default App;
