@@ -1,5 +1,9 @@
 import React from "react";
 import loginImg from "../../images/logo1.png";
+import {Register} from "./register";
+import ReactDOM from "react-dom/client";
+import {InitialView} from "../init/initialView";
+
 
 export class Login extends React.Component {
 
@@ -13,11 +17,9 @@ export class Login extends React.Component {
 
     handleMail(event) {
         this.setState(prevState => ({ mail: event.target.value, password: prevState.password }));
-        console.log('mail is:', event.target.value);
     }
     handlePassword(event) {
         this.setState(prevState => ({ mail: prevState.mail, password: event.target.value}));
-        console.log('pw is:', event.target.value);
     }
 
 
@@ -60,12 +62,31 @@ export class Login extends React.Component {
         );
     }
 
-    loginFunction() {
+    loginFunction() { //request
         // const [token, setToken] = useState();
         // if (!token) {
         //     return <Login setToken={setToken}/>
         // }
+
+
+        // buscar por mail (request)
+        // if existe mail {
+        //  comprobar contraseña {
+        //      if pw correcta {
+        //          ingresar a inicio
+        //      } else {intentar nuevamente (contar intentos) }
+        //  } else {error no existe mail}
+
         console.log("Mail is:", this.state.mail);
         console.log("Pw is:", this.state.password);
+        // <div className="container" ref={ref => (this.container = ref)}>
+        //     <InitialView containerRef={ref => (this.current = ref)}/>
+        // </div>
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        const element = <InitialView mail = {this.state.mail}/>;
+        root.render(element);
+
+
     }
 }

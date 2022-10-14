@@ -1,5 +1,5 @@
 import React from "react";
-import img from "../../images/login.svg";
+import img from "../../images/logoCompletoN.png";
 
 export class InitialView extends React.Component {
     constructor(props) {
@@ -8,7 +8,7 @@ export class InitialView extends React.Component {
 
     render() {
         return (
-            <div className="base-container" ref={this.props.containerRef}>
+            <div className="inicio">
 
                 <div className="header">Página de inicio</div>
 
@@ -19,7 +19,8 @@ export class InitialView extends React.Component {
                     <div className="form">
                         <label>Usuario:</label>
                         <br/>
-                        {/*<text>mail</text>*/}
+                        <h1>{this.props.message} </h1>
+                        <h1>Bienvenido, {this.props.mail} </h1>
 
                     </div>
                 </div>
