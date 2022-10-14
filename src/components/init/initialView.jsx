@@ -19,6 +19,7 @@ export class InitialView extends React.Component {
                     <div className="form">
                         <label>Usuario:</label>
                         <br/>
+                        <h1>{this.props.message} </h1>
                         <h1>Bienvenido, {this.props.mail} </h1>
 
                     </div>

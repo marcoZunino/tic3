@@ -1,5 +1,7 @@
 import React from "react";
 import loginImg from "../../images/logo1.png";
+import ReactDOM from "react-dom/client";
+import {InitialView} from "../init/initialView";
 
 export class Register extends React.Component {
 
@@ -18,7 +20,6 @@ export class Register extends React.Component {
                 password: prevState.password,
                 password2: prevState.password2
         }));
-        console.log('mail is:', event.target.value);
     }
     handlePassword(event) {
         this.setState(prevState => ({
@@ -26,7 +27,6 @@ export class Register extends React.Component {
             password: event.target.value,
             password2: prevState.password2
         }));
-        console.log('pw is:', event.target.value);
     }
     handlePassword2(event) {
         this.setState(prevState => ({
@@ -34,7 +34,6 @@ export class Register extends React.Component {
             password: prevState.password,
             password2: event.target.value
         }));
-        console.log('pw2 is:', event.target.value);
     }
 
     render() {
@@ -93,14 +92,16 @@ export class Register extends React.Component {
         // if (!token) {
         //     return <Login setToken={setToken}/>
         // }
-        console.log("Mail is:", this.state.mail);
-        console.log("Pw is:", this.state.password);
 
         if(this.state.password !== this.state.password2) {
             console.log("error");
         } else {
             console.log("Mail is:", this.state.mail);
             console.log("Pw is:", this.state.password);
+
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            const element = <InitialView mail = {this.state.mail} message = "Registrado con éxito"/>;
+            root.render(element);
         }
     }
 }

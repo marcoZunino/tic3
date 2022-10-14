@@ -17,11 +17,9 @@ export class Login extends React.Component {
 
     handleMail(event) {
         this.setState(prevState => ({ mail: event.target.value, password: prevState.password }));
-        console.log('mail is:', event.target.value);
     }
     handlePassword(event) {
         this.setState(prevState => ({ mail: prevState.mail, password: event.target.value}));
-        console.log('pw is:', event.target.value);
     }
 
 
