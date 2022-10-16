@@ -1,5 +1,6 @@
 import React from "react";
 import img from "../../images/logoCompletoN.png";
+import {Link} from "react-router-dom";
 
 export class InitialView extends React.Component {
     constructor(props) {
@@ -11,7 +12,9 @@ export class InitialView extends React.Component {
             <div className="inicio">
 
                 <div className="header">Página de inicio</div>
-
+                <li>
+                    <Link to="/">Salir</Link>
+                </li>
                 <div className="content">
                     <div className="image">
                         <img src={img} />

@@ -3,7 +3,8 @@ import loginImg from "../../images/logo1.png";
 import {Register} from "./register";
 import ReactDOM from "react-dom/client";
 import {InitialView} from "../init/initialView";
-
+import {Route} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export class Login extends React.Component {
 
@@ -14,6 +15,8 @@ export class Login extends React.Component {
             password: ""
         };
     }
+
+    navigate = useNavigate();
 
     handleMail(event) {
         this.setState(prevState => ({ mail: event.target.value, password: prevState.password }));
@@ -54,7 +57,7 @@ export class Login extends React.Component {
                 <div className="footer">
                     <button type="button"
                             className="btn"
-                            onClick={this.loginFunction.bind(this)}>
+                            onClick={this.loginFunction}>
                         Ingresar
                     </button>
                 </div>
@@ -62,7 +65,7 @@ export class Login extends React.Component {
         );
     }
 
-    loginFunction() { //request
+    loginFunction = () => {
         // const [token, setToken] = useState();
         // if (!token) {
         //     return <Login setToken={setToken}/>
@@ -77,16 +80,28 @@ export class Login extends React.Component {
         //      } else {intentar nuevamente (contar intentos) }
         //  } else {error no existe mail}
 
+        // fetch('http://127.0.0.1:8000/api/user',
+        //     {mode:'no-cors'})
+        //     .then(response => response.json())
+        //     .then(data => console.log('get: ', data));
+
+        // fetch('http://127.0.0.1:8000/api/user', {mode:'no-cors'});
+
+        //fetch(https://jsonplaceholder.typicode.com/todos/1);
+
+
         console.log("Mail is:", this.state.mail);
         console.log("Pw is:", this.state.password);
-        // <div className="container" ref={ref => (this.container = ref)}>
-        //     <InitialView containerRef={ref => (this.current = ref)}/>
-        // </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        const element = <InitialView mail = {this.state.mail}/>;
-        root.render(element);
+        //return navigate("/home");
+        // const root = ReactDOM.createRoot(document.getElementById('root'));
+        // const element = <InitialView mail = {this.state.mail}/>;
+        // root.render(element);
 
 
     }
 }
+
+// function navigate() {
+//     return useNavigate();
+// }
