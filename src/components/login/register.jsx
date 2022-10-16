@@ -1,107 +1,94 @@
 import React from "react";
 import loginImg from "../../images/logo1.png";
-import ReactDOM from "react-dom/client";
-import {InitialView} from "../init/initialView";
+import { useNavigate } from "react-router-dom";
 
-export class Register extends React.Component {
+export const Register = props => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            mail: "",
-            password: "",
-            password2: ""
-        };
+    let mail = props.mail;
+    let password = props.password;
+    let password2 = props.password2;
+
+    const handleMail = (event) => {
+        mail = event.target.value;
     }
 
-    handleMail(event) {
-        this.setState(prevState => ({
-                mail: event.target.value,
-                password: prevState.password,
-                password2: prevState.password2
-        }));
-    }
-    handlePassword(event) {
-        this.setState(prevState => ({
-            mail: prevState.mail,
-            password: event.target.value,
-            password2: prevState.password2
-        }));
-    }
-    handlePassword2(event) {
-        this.setState(prevState => ({
-            mail: prevState.mail,
-            password: prevState.password,
-            password2: event.target.value
-        }));
+    const handlePassword = (event) => {
+        password = event.target.value;
     }
 
-    render() {
-        return (
-            <div className="base-container" ref={this.props.containerRef}>
-                <div className="header">Registrarse</div>
-                <br/>
-                <div className="image" align>
-                    <img src={loginImg} />
-                </div>
-                <div className="content">
-                    <div className="form">
-                        {/*<div className="form-group">*/}
-                        {/*    <label htmlFor="username">Username</label>*/}
-                        {/*    <input type="text" name="username" placeholder="username" />*/}
-                        {/*</div>*/}
-                        <div className="form-group">
-                            <label htmlFor="mail">Correo electrónico</label>
-                            <input type="text"
-                                   name="mail"
-                                   placeholder="correo electrónico"
-                                   onChange={this.handleMail.bind(this)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Contraseña</label>
-                            <input type="password"
-                                   name="password"
-                                   placeholder="contraseña"
-                                   onChange={this.handlePassword.bind(this)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password2">Ingrese de nuevo la contraseña</label>
-                            <input type="password"
-                                   name="password2"
-                                   placeholder="contraseña"
-                                   onChange={this.handlePassword2.bind(this)}
-                            />
-                        </div>
+    const handlePassword2 = (event) => {
+        password2 = event.target.value;
+    }
+
+    const navigate = useNavigate();
+
+    const signInFunction = () => {
+
+        if (password !== password2) {
+            console.log("error");
+        } else {
+            console.log("Mail is:", mail);
+            console.log("Pw is:", password);
+
+            navigate("/home", {state: { user:mail }});
+        }
+    }
+
+    return (
+        <div className="base-container" ref={props.containerRef}>
+            <div className="header">Registrarse</div>
+            <br/>
+            <div className="image" align>
+                <img src={loginImg} />
+            </div>
+            <div className="content">
+                <div className="form">
+                    {/*<div className="form-group">*/}
+                    {/*    <label htmlFor="username">Username</label>*/}
+                    {/*    <input type="text" name="username" placeholder="username" />*/}
+                    {/*</div>*/}
+                    <div className="form-group">
+                        <label htmlFor="mail">Correo electrónico</label>
+                        <input type="text"
+                               name="mail"
+                               placeholder="correo electrónico"
+                               onChange={handleMail}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Contraseña</label>
+                        <input type="password"
+                               name="password"
+                               placeholder="contraseña"
+                               onChange={handlePassword}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password2">Ingrese de nuevo la contraseña</label>
+                        <input type="password"
+                               name="password2"
+                               placeholder="contraseña"
+                               onChange={handlePassword2}
+                        />
                     </div>
                 </div>
-                <div className="footer">
+            </div>
+            <div className="footer">
+                <div>
                     <button type="button"
-                            className="btn"
-                            onClick={this.signInFunction.bind(this)}>
+                            className="btn1"
+                            onClick={signInFunction}>
                         Ingresar
                     </button>
                 </div>
+                <div>
+                    <button type="button"
+                            className="btn2"
+                            onClick={() => navigate("/home", {state: { user:"" }})}>
+                        Ingresar como invitado
+                    </button>
+                </div>
             </div>
-        );
-    }
-
-    signInFunction() {
-        // const [token, setToken] = useState();
-        // if (!token) {
-        //     return <Login setToken={setToken}/>
-        // }
-
-        if(this.state.password !== this.state.password2) {
-            console.log("error");
-        } else {
-            console.log("Mail is:", this.state.mail);
-            console.log("Pw is:", this.state.password);
-
-            const root = ReactDOM.createRoot(document.getElementById('root'));
-            const element = <InitialView mail = {this.state.mail} message = "Registrado con éxito"/>;
-            root.render(element);
-        }
-    }
+        </div>
+    );
 }
