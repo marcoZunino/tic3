@@ -76,6 +76,24 @@ export class Login extends React.Component {
         //          ingresar a inicio
         //      } else {intentar nuevamente (contar intentos) }
         //  } else {error no existe mail}
+        //Parametros de la funcion get
+        const params = { mail: this.state.mail, password: this.state.password };
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization': 'Token ' + localStorage.getItem('token')
+            }
+        };
+        const url = `http://localhost:8000/api/user?${new URLSearchParams(params)}`
+        fetch(url)
+            .then(data=>{return data.json()})
+            .then(res=>{
+                console.log("Result is:", res['result'])
+                console.log("User id is:", res['user'])
+                console.log(res)
+            })
 
         console.log("Mail is:", this.state.mail);
         console.log("Pw is:", this.state.password);
