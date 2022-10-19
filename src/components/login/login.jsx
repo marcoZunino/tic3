@@ -36,11 +36,32 @@ export const Login = props => {
 
         //fetch(https://jsonplaceholder.typicode.com/todos/1);
 
+        //Parametros de la funcion get
+        const params = { mail: mail, password: password };
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization': 'Token ' + localStorage.getItem('token')
+            }
+        };
+        const url = `http://localhost:8000/api/user?${new URLSearchParams(params)}`
+        fetch(url)
+            .then(data=>{return data.json()})
+            .then(res=>{
+                console.log("Result is:", res["result"]);
+                console.log("User id is:", res["user"]);
+                //console.log(res);
 
-        console.log("Mail is:", mail);
-        console.log("Pw is:", password);
-
-        navigate("/home", {state: { user:mail }});
+                if (res["result"] === "valid") {
+                    console.log("Mail is:", mail);
+                    navigate("/home", {state: {user: mail, userId: res["user"]}});
+                } else {
+                    console.log("error: ", res["user"]);
+                    //mensaje de error !!!
+                }
+            })
     }
 
     return (
