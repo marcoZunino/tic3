@@ -1,13 +1,12 @@
-import React, {useState} from "react";
+import React from "react";
 import "./App.scss";
-import { Login, Register, InitialView } from "./components";
-import loginImg from "./images/logoCompletoN.png";
+import { Login, Register } from "./components";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLogginActive: true
+      isLoginActive: true
     };
   }
 
@@ -17,30 +16,30 @@ class App extends React.Component {
   }
 
   changeState() {
-    const { isLogginActive } = this.state;
-    if (isLogginActive) {
+    const { isLoginActive } = this.state;
+    if (isLoginActive) {
       this.rightSide.classList.remove("right");
       this.rightSide.classList.add("left");
     } else {
       this.rightSide.classList.remove("left");
       this.rightSide.classList.add("right");
     }
-    this.setState(prevState => ({ isLogginActive: !prevState.isLogginActive }));
+    this.setState(prevState => ({ isLoginActive: !prevState.isLoginActive }));
   }
 
   render() {
-    const { isLogginActive } = this.state;
-    const current = isLogginActive ? "Registrarse" : "Iniciar sesión";
-    const currentActive = isLogginActive ? "login" : "register";
+    const { isLoginActive } = this.state;
+    const current = isLoginActive ? "Registrarse" : "Iniciar sesión";
+    const currentActive = isLoginActive ? "login" : "register";
     return (
-        <div id="root" className="App">
+        <div id ="root" className="App">
           <div className="login">
-            <div className="container" ref={ref => (this.container = ref)}>
-              {isLogginActive && (
-                  <Login containerRef={ref => (this.current = ref)}/>
+            <div className="container">
+              {isLoginActive && (
+                  <Login containerRef={ref => (this.current = ref)} mail="" password=""/>
               )}
-              {!isLogginActive && (
-                  <Register containerRef={ref => (this.current = ref)} />
+              {!isLoginActive && (
+                  <Register containerRef={ref => (this.current = ref)} mail="" password="" password2=""/>
               )}
             </div>
             <RightSide
@@ -68,7 +67,5 @@ const RightSide = props => {
       </div>
   );
 };
-
-
 
 export default App;

@@ -1,73 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
 import loginImg from "../../images/logo1.png";
-import {Register} from "./register";
-import ReactDOM from "react-dom/client";
-import {InitialView} from "../init/initialView";
+import { useNavigate } from "react-router-dom";
 
+export const Login = props => {
 
-export class Login extends React.Component {
+    let mail = props.mail;
+    let password = props.password;
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            mail: "",
-            password: ""
-        };
+    const handleMail = (event) => {
+        mail = event.target.value;
     }
 
-    handleMail(event) {
-        this.setState(prevState => ({ mail: event.target.value, password: prevState.password }));
-    }
-    handlePassword(event) {
-        this.setState(prevState => ({ mail: prevState.mail, password: event.target.value}));
+    const handlePassword = (event) => {
+        password = event.target.value;
     }
 
+    const navigate = useNavigate();
 
-    render() {
-        return (
-            <div className="base-container" ref={this.props.containerRef}>
-                <div className="header">Iniciar sesión</div>
-                <br/>
-                <div className="image">
-                    <img src={loginImg} />
-                </div>
-                <div className="content">
-                    <div className="form">
-                        <div className="form-group">
-                            <label htmlFor="mail">Correo electrónico</label>
-                            <input type="text"
-                                   name="mail"
-                                   placeholder="correo electrónico"
-                                   onChange={this.handleMail.bind(this)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="password">Contraseña</label>
-                            <input type="password"
-                                   name="password"
-                                   placeholder="contraseña"
-                                   onChange={this.handlePassword.bind(this)}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="footer">
-                    <button type="button"
-                            className="btn"
-                            onClick={this.loginFunction.bind(this)}>
-                        Ingresar
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
-    loginFunction() { //request
-        // const [token, setToken] = useState();
-        // if (!token) {
-        //     return <Login setToken={setToken}/>
-        // }
-
+    const loginFunction = () => {
 
         // buscar por mail (request)
         // if existe mail {
@@ -95,16 +45,88 @@ export class Login extends React.Component {
                 console.log(res)
             })
 
-        console.log("Mail is:", this.state.mail);
-        console.log("Pw is:", this.state.password);
-        // <div className="container" ref={ref => (this.container = ref)}>
-        //     <InitialView containerRef={ref => (this.current = ref)}/>
-        // </div>
+        // fetch('http://127.0.0.1:8000/api/user',
+        //     {mode:'no-cors'})
+        //     .then(response => response.json())
+        //     .then(data => console.log('get: ', data));
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        const element = <InitialView mail = {this.state.mail}/>;
-        root.render(element);
+        // fetch('http://127.0.0.1:8000/api/user', {mode:'no-cors'});
 
+        //fetch(https://jsonplaceholder.typicode.com/todos/1);
 
+        //Parametros de la funcion get
+        const params = { mail: mail, password: password };
+        const options = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization': 'Token ' + localStorage.getItem('token')
+            }
+        };
+        const url = `http://localhost:8000/api/user?${new URLSearchParams(params)}`
+        fetch(url)
+            .then(data=>{return data.json()})
+            .then(res=>{
+                console.log("Result is:", res["result"]);
+                console.log("User id is:", res["user"]);
+                //console.log(res);
+
+                if (res["result"] === "valid") {
+                    console.log("Mail is:", mail);
+                    navigate("/home", {state: {user: mail, userId: res["user"]}});
+                } else {
+                    console.log("error: ", res["user"]);
+                    //mensaje de error !!!
+                }
+            })
     }
+
+    return (
+        <div className="base-container" ref={props.containerRef}>
+            <div className="header">Iniciar sesión</div>
+            <br/>
+            <div className="image">
+                <img src={loginImg} />
+            </div>
+            <div className="content">
+                <div className="form">
+                    <div className="form-group">
+                        <label htmlFor="mail">Correo electrónico</label>
+                        <input type="text"
+                               name="mail"
+                               placeholder="correo electrónico"
+                               onChange={handleMail}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Contraseña</label>
+                        <input type="password"
+                               name="password"
+                               placeholder="contraseña"
+                               onChange={handlePassword}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="footer">
+                <div>
+                    <button type="button"
+                            className="btn1"
+                            onClick={loginFunction}>
+                        Ingresar
+                    </button>
+                </div>
+                <div>
+                    <button type="button"
+                            className="btn2"
+                            onClick={() => navigate("/home", {state: { user:"" }})}>
+                        Ingresar como invitado
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+
 }
+
