@@ -5,17 +5,17 @@ import {Alert, AlertTitle, Button} from "@mui/material";
 
 export const Login = props => {
 
-    let mail = props.mail;
-    let password = props.password;
 
+    const [mail, setMail] = useState('');
+    const [password, setPw] = useState('');
     const [errorMessage, setMsg] = useState('');
 
     const handleMail = (event) => {
-        mail = event.target.value;
+        setMail(event.target.value);
     }
 
     const handlePassword = (event) => {
-        password = event.target.value;
+        setPw(event.target.value);
     }
 
     const navigate = useNavigate();
@@ -23,6 +23,10 @@ export const Login = props => {
     const loginFunction = () => {
         setMsg('');
         //Parametros de la funcion get
+        if (mail==='' || password==='') {
+            setMsg('Campos vacíos');
+            return
+        }
         const params = { mail: mail, password: password };
         const options = {
             method: 'GET',
@@ -54,7 +58,6 @@ export const Login = props => {
         //return <ErrorMessage message={msg}/>
         return (
             <div>
-                {/*<Alert onClose={() => {}}>This is a success alert — check it out!</Alert>*/}
                 <Alert severity="error"
                        action = {
                            <Button color="inherit" size="small" onClick={() => setMsg('')}>
@@ -63,7 +66,7 @@ export const Login = props => {
                        }
                 >
                     <AlertTitle>Error</AlertTitle>
-                    Error: <strong>{msg}</strong>
+                    {msg}
                 </Alert>
             </div>
         );
