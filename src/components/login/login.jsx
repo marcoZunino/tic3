@@ -1,11 +1,14 @@
 import React, {useState} from "react";
 import loginImg from "../../images/logo1.png";
 import { useNavigate } from "react-router-dom";
+import {Alert, AlertTitle, Button} from "@mui/material";
 
 export const Login = props => {
 
     let mail = props.mail;
     let password = props.password;
+
+    const [errorMessage, setMsg] = useState('');
 
     const handleMail = (event) => {
         mail = event.target.value;
@@ -18,24 +21,7 @@ export const Login = props => {
     const navigate = useNavigate();
 
     const loginFunction = () => {
-
-        // buscar por mail (request)
-        // if existe mail {
-        //  comprobar contraseña {
-        //      if pw correcta {
-        //          ingresar a inicio
-        //      } else {intentar nuevamente (contar intentos) }
-        //  } else {error no existe mail}
-
-        // fetch('http://127.0.0.1:8000/api/user',
-        //     {mode:'no-cors'})
-        //     .then(response => response.json())
-        //     .then(data => console.log('get: ', data));
-
-        // fetch('http://127.0.0.1:8000/api/user', {mode:'no-cors'});
-
-        //fetch(https://jsonplaceholder.typicode.com/todos/1);
-
+        setMsg('');
         //Parametros de la funcion get
         const params = { mail: mail, password: password };
         const options = {
@@ -48,20 +34,39 @@ export const Login = props => {
         };
         const url = `http://localhost:8000/api/user?${new URLSearchParams(params)}`
         fetch(url)
-            .then(data=>{return data.json()})
-            .then(res=>{
+            .then(data => data.json())
+            .then(res => {
                 console.log("Result is:", res["result"]);
                 console.log("User id is:", res["user"]);
-                //console.log(res);
 
                 if (res["result"] === "valid") {
                     console.log("Mail is:", mail);
-                    navigate("/home", {state: {user: mail, userId: res["user"]}});
+                    navigate("/home", { state: { user: mail, userId: res["user"] } });
                 } else {
                     console.log("error: ", res["user"]);
-                    //mensaje de error !!!
+                    setMsg(res["user"]);
                 }
             })
+    }
+
+    const renderError = msg => {
+        if (msg === '') return null;
+        //return <ErrorMessage message={msg}/>
+        return (
+            <div>
+                {/*<Alert onClose={() => {}}>This is a success alert — check it out!</Alert>*/}
+                <Alert severity="error"
+                       action = {
+                           <Button color="inherit" size="small" onClick={() => setMsg('')}>
+                               X
+                           </Button>
+                       }
+                >
+                    <AlertTitle>Error</AlertTitle>
+                    Error: <strong>{msg}</strong>
+                </Alert>
+            </div>
+        );
     }
 
     return (
@@ -102,10 +107,13 @@ export const Login = props => {
                 <div>
                     <button type="button"
                             className="btn2"
-                            onClick={() => navigate("/home", {state: { user:"" }})}>
+                            onClick={() => {
+                                navigate("/home", { state: { user: undefined } });
+                            }}>
                         Ingresar como invitado
                     </button>
                 </div>
+                {renderError(errorMessage)}
             </div>
         </div>
     );
