@@ -39,7 +39,7 @@ class App extends React.Component {
                   <Login containerRef={ref => (this.current = ref)} mail="" password=""/>
               )}
               {!isLoginActive && (
-                  <Register containerRef={ref => (this.current = ref)} mail="" password="" password2=""/>
+                  <Register containerRef={ref => (this.current = ref)} mail="" firstName="" lastName="" password="" password2=""/>
               )}
             </div>
             <RightSide

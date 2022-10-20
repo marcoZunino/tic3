@@ -1,14 +1,22 @@
-import React, {useState} from "react";
-import loginImg from "../../images/logo1.png";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export const ErrorMessage = (props) => {
+export const ErrorMessage = props => {
 
-
-
-    return {
-
-    }
+    return (
+        <div>
+            {/*{Object.keys(props.message).map(field =>*/}
+            {/*    <dl key={field}>*/}
+            {/*        <dt>{field}</dt>*/}
+            {/*        {props.message[field].map(error =>*/}
+            {/*            <dd key={error}>{error}</dd>*/}
+            {/*        )}*/}
+            {/*    </dl>*/}
+            {/*)}*/}
+        </div>
+        // <div className="base-container" ref={props.containerRef}>
+        //     <div className="header"> {props.message} </div>
+        // </div>
+    );
 
 
 }
