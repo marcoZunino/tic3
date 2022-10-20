@@ -22,6 +22,7 @@ export const Login = props => {
 
     const loginFunction = () => {
         setMsg('');
+
         //Parametros de la funcion get
         if (mail==='' || password==='') {
             setMsg('Campos vacíos');
