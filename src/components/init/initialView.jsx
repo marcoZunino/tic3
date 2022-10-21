@@ -27,6 +27,7 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import PublishIcon from '@mui/icons-material/Publish';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
+import {ArrowCircleRight} from "@mui/icons-material";
 
 export const InitialView = props => {
 
@@ -97,11 +98,11 @@ export const InitialView = props => {
 
     const MediaCard = () => {
         return (
-            <Card sx={{maxWidth: 345}} classname="card">
+            <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
                 <CardMedia
                     component="img"
-                    height="140"
-                    image="https://1.bp.blogspot.com/-zGQ5AFcvHjw/YPiLNL22kiI/AAAAAAADkD8/tvKgdYcdoHwsTSjXfc4cW4gQhZA9RARdACNcBGAsYHQ/s2000/Prueba_%2BBMW%2B330e%2B2.0%2BT%2BM%2BSport%2BSteptronic-294.jpg"
+                    height="400"
+                    image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
                     alt="imagen prueba"
                 />
                 <CardContent>
@@ -112,12 +113,12 @@ export const InitialView = props => {
                         65.000 km
                     </Typography>
                 </CardContent>
-                <CardActions>
-                    <Button size="small">
-                        <ThumbUpOffAltIcon color="action"/>
+                <CardActions className="cont">
+                    <Button className="btnCont" size="big">
+                        <ThumbUpOffAltIcon className="like" color="action"/>
                     </Button>
-                    <Button size="small">
-                        <ThumbDownOffAltIcon color="action"/>
+                    <Button className="btnCont" size="large">
+                        <ThumbDownOffAltIcon className="dislike" color="action"/>
                     </Button>
                 </CardActions>
             </Card>
@@ -191,17 +192,19 @@ export const InitialView = props => {
             <main className="init-content">
                 <div className="appBarSpacer" />
                 <Typography variant="h4" gutterBottom component="h2">
-                    Orders
+                    ------------
                 </Typography>
                 {/*<Typography component="div" className="chartContainer">*/}
                 {/*    <MenuIcon />*/}
                 {/*</Typography>*/}
                 <Typography variant="h4" gutterBottom component="h2">
-                    Bienvenido, {user}
+                    Bienvenido {user}
                 </Typography>
-
-                <MediaCard/>
-
+                <div className="card-container" >
+                    <ArrowCircleLeftIcon className="arrow"/>
+                    <MediaCard className="card"/>
+                    <ArrowCircleRightIcon className="arrow"/>
+                </div>
             </main>
         </div>
 
