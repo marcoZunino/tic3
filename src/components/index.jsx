@@ -1,4 +1,5 @@
 import "./login/style.scss";
+import "./init/InitStyle.scss";
 
 export { Login } from "./login/login";
 export { Register } from "./login/register";
