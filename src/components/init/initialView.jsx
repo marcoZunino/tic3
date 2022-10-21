@@ -28,6 +28,9 @@ import PublishIcon from '@mui/icons-material/Publish';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {ArrowCircleRight} from "@mui/icons-material";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import {ErrorMessage} from "../errorMessage";
 
 export const InitialView = props => {
 
@@ -35,14 +38,56 @@ export const InitialView = props => {
     let userId = props.userId;
 
     const [open, setOpen] = useState(false);
+    const [like, setLike] = useState(false);
+    const [dislike, setDislike] = useState(false);
+    const [errorMessage, setMsg] = useState('');
+
+    const askLogin = () => {
+        setMsg('Acción no permitida, debe iniciar sesión');
+
+        //navigate("/");
+    }
+
+    const toLike = () => {
+        if (userId === undefined) { //sin permisos
+            askLogin();
+            return;
+        }
+
+
+        if (!like && dislike) {
+            setDislike(false);
+        }
+        setLike(!like);
+    }
+    const toDislike = () => {
+        if (userId === undefined) { //sin permisos
+            askLogin();
+            return;
+        }
+
+        if (!dislike && like) {
+            setLike(false);
+        }
+        setDislike(!dislike);
+
+    }
 
     const location = useLocation();
 
     const back = () => {
         navigate("/");
     }
-
     const navigate = useNavigate();
+
+    const prevCard = () => {
+        return null;
+    }
+
+    const nextCard = () => {
+        return null;
+    }
+
 
     if (location.state.user !== "") {
         user = location.state.user;
@@ -63,35 +108,35 @@ export const InitialView = props => {
 
     const mainListItems = (
         <div>
-            <ListItem button>
+            <ListItem className="btn3">
                 <ListItemIcon>
-                    <PublishIcon />
+                    <PublishIcon className="item-icon"/>
                 </ListItemIcon>
-                <ListItemText primary="Mis publicaciones" />
+                <ListItemText className="item-text" primary="Mis publicaciones" />
             </ListItem>
-            <ListItem button>
+            <ListItem className="btn3">
                 <ListItemIcon>
-                    <ThumbUpOffAltIcon />
+                    <ThumbUpOffAltIcon className="item-icon"/>
                 </ListItemIcon>
-                <ListItemText primary="Mis likes" />
+                <ListItemText className="item-text" primary="Mis likes" />
             </ListItem>
-            <ListItem button>
+            <ListItem className="btn3">
                 <ListItemIcon>
-                    <ChatIcon />
+                    <ChatIcon className="item-icon"/>
                 </ListItemIcon>
-                <ListItemText primary="Mis chats" />
+                <ListItemText className="item-text" primary="Mis chats" />
             </ListItem>
-            <ListItem button>
+            <ListItem className="btn3" onClick={printId}>
                 <ListItemIcon>
-                    <AccountCircleIcon />
+                    <AccountCircleIcon className="item-icon"/>
                 </ListItemIcon>
-                <ListItemText primary="Perfil" />
+                <ListItemText className="item-text" primary="Perfil" />
             </ListItem>
-            <ListItem button>
+            <ListItem className="btn3">
                 <ListItemIcon>
-                    <SettingsIcon />
+                    <SettingsIcon className="item-icon"/>
                 </ListItemIcon>
-                <ListItemText primary="Ajustes" />
+                <ListItemText className="item-text" primary="Ajustes" />
             </ListItem>
         </div>
     );
@@ -114,12 +159,25 @@ export const InitialView = props => {
                     </Typography>
                 </CardContent>
                 <CardActions className="cont">
-                    <Button className="btnCont" size="big">
-                        <ThumbUpOffAltIcon className="like" color="action"/>
+
+                    <Button className="btnCont" onClick={toLike} size="large">
+                        { !like && (
+                            <ThumbUpOffAltIcon className="like" />
+                        )}
+                        { like && (
+                            <ThumbUpIcon className="like" />
+                        )}
                     </Button>
-                    <Button className="btnCont" size="large">
-                        <ThumbDownOffAltIcon className="dislike" color="action"/>
+
+                    <Button className="btnCont" onClick={toDislike} size="large">
+                        { !dislike && (
+                            <ThumbDownOffAltIcon className="dislike" />
+                        )}
+                        { dislike && (
+                            <ThumbDownIcon className="dislike" />
+                        )}
                     </Button>
+
                 </CardActions>
             </Card>
         )
@@ -132,7 +190,10 @@ export const InitialView = props => {
                 position="absolute"
                 className={open && "appBarShift"}
             >
+                {ErrorMessage(errorMessage, setMsg)}
+
                 <Toolbar disableGutters={open} className="toolbar">
+
                     <IconButton
                         color="inherit"
                         aria-label="Open drawer"
@@ -144,6 +205,7 @@ export const InitialView = props => {
                     >
                         <MenuIcon/>
                     </IconButton>
+
                     <Typography
                         component="h1"
                         variant="h6"
@@ -153,7 +215,24 @@ export const InitialView = props => {
                     >
                         Página de inicio
                     </Typography>
+
                     <IconButton color="inherit">
+                        { !userId && (
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+                                onClick={() => navigate("/")}
+                            >
+                                <AccountCircleIcon className="icon">
+                                    <label>
+                                        Iniciar sesión
+                                    </label>
+                                </AccountCircleIcon>
+                            </Badge>
+                        )}
+                    </IconButton>
+                    <IconButton color="inherit">
+
                         <Badge
                             //badgeContent={40}
                             color="secondary"
@@ -165,77 +244,69 @@ export const InitialView = props => {
                                 </label>
                             </ArrowCircleLeftIcon>
                         </Badge>
+
                     </IconButton>
                     Salir
                     {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
+
                 </Toolbar>
             </AppBar>
-            <Drawer
-                variant="permanent"
-                // classes={{
-                //     paper: "drawerPaper"//classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-                // }}
-                open={open}
-            >
-                {open && (
-                    <div>
-                        <div className="toolbarIcon">
-                            <IconButton onClick={handleDrawerClose}>
-                                <ArrowCircleRightIcon />
-                            </IconButton>
+
+            {open && (
+            <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    {/*{open && (*/}
+                        <div className="toolbar2">
+                            <div className="toolbarIcon">
+                                <IconButton onClick={handleDrawerClose} >
+                                    <ArrowCircleRightIcon className="item-icon" />
+                                </IconButton>
+                            </div>
+                            <Divider />
+                            {mainListItems}
                         </div>
-                    <Divider />
-                    {mainListItems}
-                    </div>
-                )}
+                    {/*)}*/}
             </Drawer>
+            )}
+            {/*{!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}*/}
+
             <main className="init-content">
+
                 <div className="appBarSpacer" />
+
                 <Typography variant="h4" gutterBottom component="h2">
                     ------------
                 </Typography>
                 {/*<Typography component="div" className="chartContainer">*/}
                 {/*    <MenuIcon />*/}
                 {/*</Typography>*/}
+
                 <Typography variant="h4" gutterBottom component="h2">
                     Bienvenido {user}
                 </Typography>
+
                 <div className="card-container" >
-                    <ArrowCircleLeftIcon className="arrow"/>
+
+                    <Badge
+                        onClick={prevCard}
+                    >
+                        <ArrowCircleLeftIcon className="arrow" />
+                    </Badge>
+
                     <MediaCard className="card"/>
-                    <ArrowCircleRightIcon className="arrow"/>
+
+                    <Badge
+                        onClick={nextCard}
+                    >
+                        <ArrowCircleRightIcon className="arrow" />
+                    </Badge>
+
+
                 </div>
+
             </main>
         </div>
 
-        // <div className="inicio">
-        //     <div className="header">Página de inicio</div>
-        //     <li>
-        //         <Link to="/">Salir</Link>
-        //     </li>
-        //     <div className="content">
-        //         <div className="image">
-        //             <img src={img} />
-        //         </div>
-        //         <div className="form">
-        //             <label>Usuario:</label>
-        //             <br/>
-        //             <h1>{props.message} </h1>
-        //             <h1>Bienvenido, {user} </h1>
-        //
-        //             <div>
-        //                 <button type="button"
-        //                         className="btn1"
-        //                         onClick={printId}>
-        //                     ID
-        //                 </button>
-        //             </div>
-        //
-        //         </div>
-        //     </div>
-        // </div>
     );
-
 
 
 }

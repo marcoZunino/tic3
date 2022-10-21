@@ -114,7 +114,7 @@
   padding: 5px 30px;
   background-color: #f36424;
   color: #fff;
-  border-radius: 3px;
+  border-radius: 30px;
   border-color: #f36424;
   border-style: solid;
   transition: all 250ms ease-in-out;
@@ -132,7 +132,7 @@
   padding: 5px 20px;
   background-color: #fff;
   color: #f36424;
-  border-radius: 3px;
+  border-radius: 30px;
   border-color: #f36424;
   border-style: solid;
   transition: all 250ms ease-in-out;
@@ -149,5 +149,17 @@
 .wrapper {
   padding: 20px;
   background-color: white;
+}
+
+.errorMsg {
+  align-items: start;
+  justify-content: start;
+  background-color: white;
+
+  .errorTitle {
+    align-items: start;
+    justify-content: start;
+
+  }
 }
 
