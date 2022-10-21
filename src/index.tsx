@@ -15,6 +15,12 @@ root.render(
           <Routes>
               <Route path= "/" element={<App />} />
               <Route path= "/home" element={<InitialView />} />
+              <Route path="/home/likes" element={<InitialView />} />
+              <Route path="/home/pubs" element={<InitialView />} />
+              <Route path="/home/pubs/new" element={<InitialView />} />
+              <Route path="/home/vehicle" element={<InitialView />} />
+              <Route path="/home/chats" element={<InitialView />} />
+              <Route path="/profile" element={<InitialView />} />
           </Routes>
       </BrowserRouter>
   </React.StrictMode>

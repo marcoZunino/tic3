@@ -12,12 +12,23 @@
   align-items: center;
   justify-content: center;
   //...theme.mixins.toolbar,
+
+  .item-icon {
+    display: flex;
+    align-self: end;
+    text-align: center;
+    color: #f36424;
+    scale: 125%;
+  }
 }
 
 .icon {
   display: flex;
   align-self: end;
   text-align: center;
+  color: white;
+  scale: 125%;
+
   label {
     font-size: 20px;
   }
@@ -66,7 +77,9 @@
   position: relative;
   width: drawerWidth + 1%;
 
-  //transition: theme.transitions.create('width', {
+  transition: all;
+
+  //        themtransitions.create('width', {
   //easing: theme.transitions.easing.sharp,
   //duration: theme.transitions.duration.enteringScreen,
   //}),
@@ -102,6 +115,19 @@
       color: #f36424;
       scale: 300%;
       margin-top: 250px;
+      size: auto;
+      background-color: white;
+      border-radius: 15px;
+      transition: all 250ms ease-in-out;
+      cursor: pointer;
+      margin-bottom: 10px;
+
+      &:hover {
+        background-color: rgba(243, 101, 36, 0.3);
+      }
+      &:focus {
+        outline: none;
+      }
 
     }
 
@@ -148,4 +174,50 @@
     }
 
   }
+}
+
+.toolbar2 {
+  padding-right: 24px; // keep right padding when drawer closed
+  //background-color: #757575;
+}
+
+.btn3 {
+  size: auto;
+  font-size: 200px;
+  padding: 5px 20px;
+  background-color: #f36424;
+  color: white;
+  border-radius: 30px;
+  transition: all 250ms ease-in-out;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin-left: 10px;
+
+  .item-icon {
+    display: flex;
+    align-self: end;
+    color: white;
+    scale: 125%;
+  }
+
+  .item-text {
+    display: flex;
+    align-self: start;
+    color: white;
+    font-size: 1px;
+
+  }
+
+  &:hover {
+    background-color: rgba(243, 101, 36, 0.3);
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.card {
+
+
+
 }

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import loginImg from "../../images/logo1.png";
 import { useNavigate } from "react-router-dom";
-import {Alert, AlertTitle, Button} from "@mui/material";
+import { ErrorMessage } from "../errorMessage";
 
 export const Login = props => {
 
@@ -54,25 +54,6 @@ export const Login = props => {
             })
     }
 
-    const renderError = msg => {
-        if (msg === '') return null;
-        //return <ErrorMessage message={msg}/>
-        return (
-            <div>
-                <Alert severity="error"
-                       action = {
-                           <Button color="inherit" size="small" onClick={() => setMsg('')}>
-                               X
-                           </Button>
-                       }
-                >
-                    <AlertTitle>Error</AlertTitle>
-                    {msg}
-                </Alert>
-            </div>
-        );
-    }
-
     return (
         <div className="base-container" ref={props.containerRef}>
             <div className="header">Iniciar sesión</div>
@@ -117,7 +98,7 @@ export const Login = props => {
                         Ingresar como invitado
                     </button>
                 </div>
-                {renderError(errorMessage)}
+                {ErrorMessage(errorMessage, setMsg)}
             </div>
         </div>
     );
