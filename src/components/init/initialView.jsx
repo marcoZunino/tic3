@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
@@ -29,7 +29,6 @@ import {ErrorMessage} from "../errorMessage";
 import logo from "../../images/logoCompletoN.png";
 import {MainListItems} from "./mainListItems";
 
-
 export const InitialView = props => {
 
     let user = props.user;
@@ -40,13 +39,16 @@ export const InitialView = props => {
         userId = location.state.userId;
     }
 
+    const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
+        "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg"];
+
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
-
+    const [allVehicles, setAll] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
     const [vehicleItem, setVehicleItem] = useState(0);
-    const [allVehicles, setAll] = useState(undefined);
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
@@ -88,36 +90,35 @@ export const InitialView = props => {
     }
 
     const getAllVehicles = () => {
-        const params = { qty: vehicleItem };
-        const options = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json;charset=UTF-8',
-                'Authorization': 'Token ' + localStorage.getItem('token')
-            }
-        };
+
         const url = `http://localhost:8000/api/vehiculo`
         fetch(url)
             .then(data => data.json())
             .then(res => {
                 console.log("Result is:", res["result"]);
+                console.log("Data is:", res["data"]);
 
                 if (res["result"] === "ok") {
                     setAll(res["data"]);
                 } else {
-                    console.log("error: ", res["vehiculo"]);
-                    setMsg(res["result"]);
+                    console.log("error: ", res["data"]);
+                    setMsg(res["data"]);
                 }
             })
 
     }
 
+    useEffect(getAllVehicles, []);
+
     const prevCard = () => {
         setVehicleItem((vehicleItem - 1) % allVehicles.length);
+        setLike(false);
+        setDislike(false);
     }
     const nextCard = () => {
         setVehicleItem((vehicleItem + 1) % allVehicles.length);
+        setLike(false);
+        setDislike(false);
     }
 
     const handleDrawerOpen = () => {
@@ -131,25 +132,31 @@ export const InitialView = props => {
 
         const thisVehicle = props.thisVehicle;
 
+        if (thisVehicle === undefined) {
+            return null;
+        }
+
         return (
             <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
                 <CardMedia
                     component="img"
                     height="400"
-                    image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
+                    //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
+                    image={images[vehicleItem]}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        BMW Serie 3
-                        {/*{thisVehicle["marca"]}*/}
-                        {/*{thisVehicle["modelo"]}*/}
+                        {/*BMW Serie 3*/}
+                        {thisVehicle["marca"]} {"  "}
+                        {thisVehicle["modelo"]}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        65.000 km
-                        {/*{thisVehicle["precio_base"]}*/}
-                        {/*{thisVehicle["kilometros"]}*/}
+                        {/*65.000 km*/}
+                        Precio base: {thisVehicle["precio_base"]} <br/>
+                        {/*Kilometraje: {thisVehicle["kilometros"]} <br/>*/}
+                        {thisVehicle["tipo"]}
                     </Typography>
                 </CardContent>
                 <CardActions className="cont">
@@ -287,7 +294,7 @@ export const InitialView = props => {
                 {/*    <MenuIcon />*/}
                 {/*</Typography>*/}
 
-                <Typography variant="h4" gutterBottom component="h2">
+                <Typography variant="h5" gutterBottom component="h2">
                     Bienvenido {user}
                 </Typography>
 
@@ -299,9 +306,8 @@ export const InitialView = props => {
                         <ArrowCircleLeftIcon className="arrow" />
                     </Badge>
 
-                    {getAllVehicles}
                     <MediaCard className="card"
-                    //           thisVehicle={allVehicles[vehicleItem]}
+                               thisVehicle={allVehicles[vehicleItem]}
                     />
 
                     <Badge
