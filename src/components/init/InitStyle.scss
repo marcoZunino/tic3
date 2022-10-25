@@ -200,6 +200,29 @@
     scale: 125%;
   }
 
+  .logo-icon {
+    width: 10px;
+    height: 10px;
+    display: flex;
+    margin-left: 8px;
+    align-self: end;
+    scale: 400%;
+    border-radius: 100%;
+
+    img {
+      width: fit-content;
+      height: fit-content;
+      scale: 100%;
+      border-radius: 40%;
+    }
+    &:hover {
+      background-color: rgba(243, 101, 36, 0.3);
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+
   .item-text {
     display: flex;
     align-self: start;

@@ -8,7 +8,7 @@ import {
     Badge,
     CssBaseline,
     Divider,
-    Drawer,
+    Drawer, Grid,
     IconButton,
     Toolbar,
     Typography
@@ -25,11 +25,12 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {ArrowCircleRight} from "@mui/icons-material";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import {ErrorMessage} from "../errorMessage";
-import logo from "../../images/logoCompletoN.png";
-import {MainListItems} from "./mainListItems";
+import {ErrorMessage} from "../../errorMessage";
+import logo from "../../../images/logoCompletoN.png";
+import {MainListItems} from "../mainListItems";
+import ChatIcon from "@mui/icons-material/Chat";
 
-export const InitialView = props => {
+export const PubsView = props => {
 
     let user = props.user;
     let userId = props.userId;
@@ -45,10 +46,7 @@ export const InitialView = props => {
 
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
-    const [allVehicles, setAll] = useState([]);
-    const [like, setLike] = useState(false);
-    const [dislike, setDislike] = useState(false);
-    const [vehicleItem, setVehicleItem] = useState(0);
+    const [allPubs, setAllPubs] = useState([]);
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
@@ -56,32 +54,12 @@ export const InitialView = props => {
         //navigate("/");
     }
 
-    const toLike = () => {
-        if (userId === undefined) { //sin permisos
-            askLogin();
-            return;
-        }
-
-        //post like
-
-        if (!like && dislike) {
-            setDislike(false);
-        }
-        setLike(!like);
+    const openChat = () => {
+        return null;
     }
-    const toDislike = () => {
-        if (userId === undefined) { //sin permisos
-            askLogin();
-            return;
-        }
 
-        //post dislike
-
-        if (!dislike && like) {
-            setLike(false);
-        }
-        setDislike(!dislike);
-
+    const newPublish = () => {
+        return null;
     }
 
     const navigate = useNavigate();
@@ -89,7 +67,7 @@ export const InitialView = props => {
         navigate("/");
     }
 
-    const getAllVehicles = () => {
+    const getAllPubs = () => {
 
         const url = `http://localhost:8000/api/vehiculo`
         fetch(url)
@@ -99,29 +77,22 @@ export const InitialView = props => {
                 console.log("Data is:", res["data"]);
 
                 if (res["result"] === "ok") {
-                    setAll(res["data"]);
+                    setAllPubs(res["data"]);
                 } else {
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
 
-    }
+    } //falta filtrar por id segun vendedor
 
-    useEffect(getAllVehicles, []);
-
-    //useEffect(() => console.log(vehicleItem), [vehicleItem]);
-
-    const prevCard = () => {
-        setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
-        setLike(false);
-        setDislike(false);
-    }
-    const nextCard = () => {
-        setVehicleItem((vehicleItem + 1) % allVehicles.length);
-        setLike(false);
-        setDislike(false);
-    }
+    useEffect(() => {
+        if (userId === undefined) {
+            askLogin();
+        } else {
+            getAllPubs();
+        }
+    }, []);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -130,21 +101,21 @@ export const InitialView = props => {
         setOpen(false);
     };
 
-    const VehicleCard = props => {
+    const PubCard = props => {
 
         const thisVehicle = props.thisVehicle;
+        const item = props.item;
 
         if (thisVehicle === undefined) {
             return null;
         }
 
         return (
-            <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
+            <Card sx={{maxWidth: 300, maxHeight: 200}} classname="card">
                 <CardMedia
                     component="img"
                     height="400"
-                    //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
-                    image={images[vehicleItem]}
+                    image={images[item]}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
@@ -163,28 +134,14 @@ export const InitialView = props => {
                 </CardContent>
                 <CardActions className="cont">
 
-                    <Button className="btnCont" onClick={toLike} size="large">
-                        { !like && (
-                            <ThumbUpOffAltIcon className="like" />
-                        )}
-                        { like && (
-                            <ThumbUpIcon className="like" />
-                        )}
-                    </Button>
-
-                    <Button className="btnCont" onClick={toDislike} size="large">
-                        { !dislike && (
-                            <ThumbDownOffAltIcon className="dislike" />
-                        )}
-                        { dislike && (
-                            <ThumbDownIcon className="dislike" />
-                        )}
+                    <Button className="btnCont" onClick={openChat} size="large">
+                        <ChatIcon className="item-icon"/>
                     </Button>
 
                 </CardActions>
             </Card>
         )
-    };
+    };  //reemplazar por una card mas chica
 
     return (
         <div className="root">
@@ -192,7 +149,7 @@ export const InitialView = props => {
             <AppBar
                 position="absolute"
                 className="appBarShift"
-                    //{open && "appBarShift"}
+                //{open && "appBarShift"}
             >
                 {ErrorMessage(errorMessage, setMsg)}
 
@@ -217,7 +174,6 @@ export const InitialView = props => {
                         <img src={logo}  alt="logo"/>
                     </div>
 
-
                     <Typography
                         component="h1"
                         variant="h6"
@@ -225,42 +181,43 @@ export const InitialView = props => {
                         noWrap
                         className="title"
                     >
-                        Página de inicio
+                        Mis publicaciones
                     </Typography>
 
-                    { !userId && (
-                    <IconButton color="inherit"
-                                onClick={() => navigate("/")}
-                    >
-                        <Badge
-                            //badgeContent={40}
-                            color="secondary"
 
+                    { !userId && (
+                        <IconButton color="inherit"
+                                    onClick={() => navigate("/")}
                         >
-                            <AccountCircleIcon className="icon" />
-                        </Badge>
-                        <label className="label">
-                            Iniciar sesión
-                        </label>
-                    </IconButton>
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+
+                            >
+                                <AccountCircleIcon className="icon" />
+                            </Badge>
+                            <label className="label">
+                                Iniciar sesión
+                            </label>
+                        </IconButton>
 
                     )}
 
                     { userId && (
-                    <IconButton color="inherit"
-                                onClick={back}
-                    >
-
-                        <Badge
-                            //badgeContent={40}
-                            color="secondary"
+                        <IconButton color="inherit"
+                                    onClick={back}
                         >
-                            <ArrowCircleLeftIcon className="icon" />
-                        </Badge>
-                        <label className="label">
-                            Cerrar sesión
-                        </label>
-                    </IconButton>
+
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+                            >
+                                <ArrowCircleLeftIcon className="icon" />
+                            </Badge>
+                            <label className="label">
+                                Cerrar sesión
+                            </label>
+                        </IconButton>
 
                     )}
 
@@ -270,17 +227,17 @@ export const InitialView = props => {
             </AppBar>
 
             {open && (
-            <Drawer variant="permanent" className="drawerPaper" open={open} >
-                        <div className="toolbar2">
-                            <div className="toolbarIcon">
-                                <IconButton onClick={handleDrawerClose} >
-                                    <ArrowCircleRightIcon className="item-icon" />
-                                </IconButton>
-                            </div>
-                            {/*<Divider />*/}
-                            <MainListItems user={user} userId={userId} />
+                <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    <div className="toolbar2">
+                        <div className="toolbarIcon">
+                            <IconButton onClick={handleDrawerClose} >
+                                <ArrowCircleRightIcon className="item-icon" />
+                            </IconButton>
                         </div>
-            </Drawer>
+                        {/*<Divider />*/}
+                        <MainListItems user={user} userId={userId} />
+                    </div>
+                </Drawer>
             )}
 
             {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
@@ -302,23 +259,26 @@ export const InitialView = props => {
 
                 <div className="card-container" >
 
-                    <Badge
-                        onClick={prevCard}
-                    >
-                        <ArrowCircleLeftIcon className="arrow" />
-                    </Badge>
+                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                        {Array.from(Array(6)).map((_, index) => (
+                            <Grid xs={2} sm={4} md={4} key={index}>
+                                <PubCard className="card"
+                                          thisVehicle={allPubs[index]}
+                                          item={index % allPubs.length}
+                                    //thisVehicle={undefined}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
 
-                    <VehicleCard className="card"
-                               thisVehicle={allVehicles[vehicleItem]}
-                    />
+                </div>
 
-                    <Badge
-                        onClick={nextCard}
-                    >
-                        <ArrowCircleRightIcon className="arrow" />
-                    </Badge>
-
-
+                <div>
+                    <button type="button"
+                            className="btn1"
+                            onClick={newPublish}>
+                        Publicar nuevo vehículo
+                    </button>
                 </div>
 
             </main>
