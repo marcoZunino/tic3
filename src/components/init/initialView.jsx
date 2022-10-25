@@ -41,6 +41,42 @@ export const InitialView = props => {
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
     const [errorMessage, setMsg] = useState('');
+    const [getVehiculos, setGetVehiculos] = useState(false);
+
+    function Base64ToImage(base64img, callback) {
+        let img = new Image();
+        img.onload = function() {
+            callback(img);
+        };
+        img.src = base64img;
+
+    }
+
+    const getImages = () => {
+        // Get de imagenes:
+
+        if(!getVehiculos) {
+            const url = `http://localhost:8000/api/vehiculo`;
+            fetch(url)
+                .then(data => data.json())
+                .then(res => {
+                    console.log(res);
+                    console.log(res['vehiculo'][0]);
+                    console.log(res['vehiculo'][0]['image']);
+                    // imagen en res['vehiculo'][0]['image']
+                    // Prueba para mostrar la imagen:
+                    let base64img = res['vehiculo'][0]['image'];
+                    // creacion de imagen
+                    Base64ToImage(base64img, function(img) {
+                        document.getElementById('main').appendChild(img);
+                        var log = "w=" + img.width + " h=" + img.height;
+                        document.getElementById('log').value = log;
+                    });
+
+                })
+            setGetVehiculos(true); // No volvera a hacer el get
+        }
+    }
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
@@ -49,7 +85,7 @@ export const InitialView = props => {
     }
 
     const toLike = () => {
-        if (userId === undefined) { //sin permisos
+        if (userId === undefined) { // sin permisos
             askLogin();
             return;
         }
@@ -81,6 +117,7 @@ export const InitialView = props => {
     const navigate = useNavigate();
 
     const prevCard = () => {
+        console.log("PREV CARD");
         return null;
     }
 
