@@ -66,7 +66,7 @@ export const InitialView = props => {
                     // imagen en res['vehiculo'][0]['image']
                     // Prueba para mostrar la imagen:
                     let base64img = res['vehiculo'][0]['image'];
-                    // crecion de imagen
+                    // creacion de imagen
                     Base64ToImage(base64img, function(img) {
                         document.getElementById('main').appendChild(img);
                         var log = "w=" + img.width + " h=" + img.height;
@@ -332,7 +332,7 @@ export const InitialView = props => {
                     <MediaCard className="card"/>
 
                     <Badge
-                        onClick={getImages}
+                        onClick={nextCard}
                     >
                         <ArrowCircleRightIcon className="arrow" />
                     </Badge>
