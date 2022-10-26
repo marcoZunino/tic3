@@ -62,25 +62,81 @@ export const InitialView = props => {
             return;
         }
 
-        //post like
+        if (!like) {//post like
 
-        if (!like && dislike) {
-            setDislike(false);
+            // Parametros de la funcion POST
+            const params = { vehiculo: allVehicles[vehicleItem]["id"], comprador: userId };
+            console.log("params: ", params);
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body:JSON.stringify(params)
+            };
+            const url = `http://localhost:8000/api/like`
+            fetch(url, options)
+                .then(data => data)
+                .then(res => {
+                    try {
+                        console.log(res.status);
+                        console.log(res.ok);
+                        //console.log(res.json());
+                        console.log(res);
+                        //console.log(res.id);
+                        if (res.ok) { // Indica si la respuesta fue afirmativa
+
+                            if (dislike) { //si intento dar like cuando ya di dislike
+                                toDislike(); //deshace dislike
+                            }
+
+                            setLike(true);
+
+                        } else {
+                            setMsg("Error en like")
+                        }
+
+                    } catch (e) {
+                        console.log(e.message);
+                        setMsg("Unexpeted error");
+                    }
+                })
+
+        } else { // deshacer like
+            //DELETE
+
+            setLike(false);
+
         }
-        setLike(!like);
+
+
     }
+
     const toDislike = () => {
         if (userId === undefined) { //sin permisos
             askLogin();
             return;
         }
 
-        //post dislike
+        if (!dislike) {
 
-        if (!dislike && like) {
-            setLike(false);
+            // POST dislike
+
+            if (like) { // si intento dar dislike cuando di like
+                toLike();  // deshace like
+            }
+
+            setDislike(true);
+
+        } else { //deshacer dislike
+            // DELETE
+
+            setDislike(false);
+
         }
-        setDislike(!dislike);
+
+
 
     }
 
@@ -284,6 +340,8 @@ export const InitialView = props => {
             )}
 
             {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
+
+
 
             <main className="init-content">
 
