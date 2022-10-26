@@ -6,6 +6,7 @@
 .toolbar {
   padding-right: 24px; // keep right padding when drawer closed
   background-color: #f36424;
+
 }
 .toolbarIcon {
   display: flex;
@@ -29,16 +30,15 @@
   color: white;
   scale: 125%;
 
-  label {
-    font-size: 20px;
-  }
-  //.iconText {
-  //
-  //}
+}
+
+.label {
+  font-size: 18px;
+  margin-left: 7px;
 }
 
 .appBar {
-  z-index: 1
+  z-index: 1;
   //transition: theme.transitions.create(['width', 'margin'], {
   //easing: theme.transitions.easing.sharp,
   //duration: theme.transitions.duration.leavingScreen,
@@ -92,7 +92,6 @@
   //easing: theme.transitions.easing.sharp,
   //duration: theme.transitions.duration.leavingScreen,
   //}),
-  width: 100%;
   //[theme.breakpoints.up('sm')]: {
   //width: 100%;
 }
@@ -105,6 +104,7 @@
   height: 100vh;
   overflow: auto;
   justify-content: center;
+  margin-top: auto;
 
   .card-container {
     display: flex;
@@ -200,6 +200,29 @@
     scale: 125%;
   }
 
+  .logo-icon {
+    width: 10px;
+    height: 10px;
+    display: flex;
+    margin-left: 8px;
+    align-self: end;
+    scale: 400%;
+    border-radius: 100%;
+
+    img {
+      width: fit-content;
+      height: fit-content;
+      scale: 100%;
+      border-radius: 40%;
+    }
+    &:hover {
+      background-color: rgba(243, 101, 36, 0.3);
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+
   .item-text {
     display: flex;
     align-self: start;
@@ -214,6 +237,22 @@
   &:focus {
     outline: none;
   }
+}
+
+.image2 {
+  width: 20em;
+  margin-left: 5%;
+  margin-right: auto;
+
+  img {
+    width: 50%;
+    height: 50%;
+    scale: 130%;
+  }
+}
+
+.margin {
+  margin-left: 200px;
 }
 
 .card {
