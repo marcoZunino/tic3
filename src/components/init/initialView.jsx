@@ -48,6 +48,7 @@ export const InitialView = props => {
     const [allVehicles, setAll] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
+
     const [vehicleItem, setVehicleItem] = useState(0);
 
     const askLogin = () => {
@@ -57,7 +58,7 @@ export const InitialView = props => {
     }
 
     const toLike = () => {
-        if (userId === undefined) { //sin permisos
+        if (userId === undefined) { // sin permisos
             askLogin();
             return;
         }
@@ -88,6 +89,7 @@ export const InitialView = props => {
     const back = () => {
         navigate("/");
     }
+
 
     const getAllVehicles = () => {
 
