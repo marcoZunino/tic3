@@ -66,7 +66,7 @@ export const InitialView = props => {
     }
 
 
-    const getAllVehicles = () => {
+    const getAllVehicles = () => { // falta filtrar para descartar los vehiculos likeados o dislikeados
 
         const url = `http://localhost:8000/api/vehiculo`
         fetch(url)
@@ -86,6 +86,9 @@ export const InitialView = props => {
     }
 
     const getUserLikes = () => {  //falta filtrar por usuario
+
+        let result = [];
+
         const url = `http://localhost:8000/api/like`
         fetch(url)
             .then(data => data.json())
@@ -94,17 +97,24 @@ export const InitialView = props => {
                 console.log("Data is:", res["data"]);
 
                 if (res["result"] === "ok") {
-                    setUserLikes(res["data"]); // TRAER SOLO LOS ID DE VEHICULOS
+                    // for (let v in res["data"]) { // traer los id de vehiculos con like
+                    //
+                    //     //setUserLikes(userLikes.concat(v["id_vehiculo"]));
+                    // }
+                    result = res["data"];
                 } else {
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
 
+        return result;
 
     }
-
     const getUserDislikes = () => {  //falta filtrar por usuario
+
+        let result = [];
+
         const url = `http://localhost:8000/api/dislike`
         fetch(url)
             .then(data => data.json())
@@ -113,13 +123,15 @@ export const InitialView = props => {
                 console.log("Data is:", res["data"]);
 
                 if (res["result"] === "ok") {
-                    setUserDislikes(res["data"]); // TRAER SOLO LOS ID DE VEHICULOS
+                    result = res["data"];
+                    //setUserDislikes(res["data"])
                 } else {
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
 
+        return result;
 
     }
 
@@ -148,7 +160,6 @@ export const InitialView = props => {
 
         setLikeChange(true);
     }
-
     const toDislike = () => {
         if (userId === undefined) { //sin permisos
             askLogin();
@@ -251,8 +262,26 @@ export const InitialView = props => {
 
     useEffect(() => {
         getAllVehicles();
-        //getUserLikes();
-        //getUserDislikes()
+
+        const likes = getUserLikes();
+        const dislikes = getUserDislikes();
+
+        for (let i = 0; i < allVehicles.length; i++) {
+
+            for (let like in likes) {
+                if (allVehicles[i]["id"] === like["id_vehiculo"]) {
+                    setUserLikes(userLikes.concat(i));
+                }
+            }
+
+            for (let dislike in dislikes) {
+                if (allVehicles[i]["id"] === dislike["id_vehiculo"]) {
+                    setUserDislikes(userDislikes.concat(i));
+                }
+            }
+
+        }
+
     }, []);
 
     useEffect(() => {
