@@ -79,7 +79,7 @@ export const LikesView = props => {
 
     const getAllLikes = () => {
 
-        const url = `http://localhost:8000/api/vehiculo`
+        const url = `http://localhost:8000/api/like`
         fetch(url)
             .then(data => data.json())
             .then(res => {

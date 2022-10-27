@@ -45,100 +45,19 @@ export const InitialView = props => {
 
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
-    const [allVehicles, setAll] = useState([]);
+    const [allVehicles, setAllVehicles] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
-
+    const [userLikes, setUserLikes] = useState([]);
+    const [userDislikes, setUserDislikes] = useState([]);
     const [vehicleItem, setVehicleItem] = useState(0);
+    const [likeChange, setLikeChange] = useState(false);
+    const [dislikeChange, setDislikeChange] = useState(false);
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
 
         //navigate("/");
-    }
-
-    const toLike = () => {
-        if (userId === undefined) { // sin permisos
-            askLogin();
-            return;
-        }
-
-        if (!like) {//post like
-
-            // Parametros de la funcion POST
-            const params = { vehiculo: allVehicles[vehicleItem]["id"], comprador: userId };
-            console.log("params: ", params);
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json;charset=UTF-8'
-                },
-                body:JSON.stringify(params)
-            };
-            const url = `http://localhost:8000/api/like`
-            fetch(url, options)
-                .then(data => data)
-                .then(res => {
-                    try {
-                        console.log(res.status);
-                        console.log(res.ok);
-                        //console.log(res.json());
-                        console.log(res);
-                        //console.log(res.id);
-                        if (res.ok) { // Indica si la respuesta fue afirmativa
-
-                            if (dislike) { //si intento dar like cuando ya di dislike
-                                toDislike(); //deshace dislike
-                            }
-
-                            setLike(true);
-
-                        } else {
-                            setMsg("Error en like")
-                        }
-
-                    } catch (e) {
-                        console.log(e.message);
-                        setMsg("Unexpeted error");
-                    }
-                })
-
-        } else { // deshacer like
-            //DELETE
-
-            setLike(false);
-
-        }
-
-
-    }
-
-    const toDislike = () => {
-        if (userId === undefined) { //sin permisos
-            askLogin();
-            return;
-        }
-
-        if (!dislike) {
-
-            // POST dislike
-
-            if (like) { // si intento dar dislike cuando di like
-                toLike();  // deshace like
-            }
-
-            setDislike(true);
-
-        } else { //deshacer dislike
-            // DELETE
-
-            setDislike(false);
-
-        }
-
-
-
     }
 
     const navigate = useNavigate();
@@ -157,7 +76,7 @@ export const InitialView = props => {
                 console.log("Data is:", res["data"]);
 
                 if (res["result"] === "ok") {
-                    setAll(res["data"]);
+                    setAllVehicles(res["data"]);
                 } else {
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
@@ -166,19 +85,213 @@ export const InitialView = props => {
 
     }
 
-    useEffect(getAllVehicles, []);
+    const getUserLikes = () => {  //falta filtrar por usuario
+        const url = `http://localhost:8000/api/like`
+        fetch(url)
+            .then(data => data.json())
+            .then(res => {
+                console.log("Result is:", res["result"]);
+                console.log("Data is:", res["data"]);
 
-    //useEffect(() => console.log(vehicleItem), [vehicleItem]);
+                if (res["result"] === "ok") {
+                    setUserLikes(res["data"]); // TRAER SOLO LOS ID DE VEHICULOS
+                } else {
+                    console.log("error: ", res["data"]);
+                    setMsg(res["data"]);
+                }
+            })
+
+
+    }
+
+    const getUserDislikes = () => {  //falta filtrar por usuario
+        const url = `http://localhost:8000/api/dislike`
+        fetch(url)
+            .then(data => data.json())
+            .then(res => {
+                console.log("Result is:", res["result"]);
+                console.log("Data is:", res["data"]);
+
+                if (res["result"] === "ok") {
+                    setUserDislikes(res["data"]); // TRAER SOLO LOS ID DE VEHICULOS
+                } else {
+                    console.log("error: ", res["data"]);
+                    setMsg(res["data"]);
+                }
+            })
+
+
+    }
+
+    const toLike = () => {
+        if (userId === undefined) { // sin permisos
+            askLogin();
+            return;
+        }
+
+        if (!like) {
+
+            setUserLikes(userLikes.concat(vehicleItem));
+
+            if (dislike) {
+                toDislike();
+            }
+
+        } else { // deshacer like
+
+            // DELETE request
+
+            //setLike(false);
+            setUserLikes(userLikes.filter(item => item !== vehicleItem)); // remove
+
+        }
+
+        setLikeChange(true);
+    }
+
+    const toDislike = () => {
+        if (userId === undefined) { //sin permisos
+            askLogin();
+            return;
+        }
+
+        if (!dislike) {
+
+            // POST dislike
+
+            //setDislike(true);
+            setUserDislikes(userDislikes.concat(vehicleItem));
+
+            if (like) { // si intento dar dislike cuando di like
+                toLike();  // deshace like
+            }
+
+        } else { //deshacer dislike
+            // DELETE
+
+            //setDislike(false);
+            setUserDislikes(userDislikes.filter(item => item !== vehicleItem));
+
+        }
+
+
+        setDislikeChange(true);
+    }
+
+    const postLike = () => {
+        //Parametros de la funcion POST
+        const params = { vehiculo: allVehicles[vehicleItem]["id"], comprador: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/like`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log(res.status);
+                    console.log(res.ok);
+                    //console.log(res.json());
+                    console.log(res);
+                    //console.log(res.id);
+                    if (!res.ok) {
+                        setMsg("Error en like")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+    }
+    const deleteLike = () => { //!!!!
+
+    }
+
+    const postDislike = () => {
+
+        const params = { vehiculo: allVehicles[vehicleItem]["id"], comprador: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/dislike`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log(res.status);
+                    console.log(res.ok);
+                    //console.log(res.json());
+                    console.log(res);
+                    //console.log(res.id);
+                    if (!res.ok) {
+                        setMsg("Error en dislike")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+
+    }
+    const deleteDislike = () => { //!!!!
+
+    }
+
+    useEffect(() => {
+        getAllVehicles();
+        //getUserLikes();
+        //getUserDislikes()
+    }, []);
+
+    useEffect(() => {
+        setLike(userLikes.includes(vehicleItem));
+        setDislike(userDislikes.includes(vehicleItem));
+    })
+
+    useEffect(() => {
+        setLikeChange(false);
+        setDislikeChange(false);
+    }, [vehicleItem])
+
+    const updateDB = () => {
+
+        if (likeChange) {
+            if (like) {
+                postLike();
+            } else {
+                deleteLike();
+            }
+        }
+
+        if (dislikeChange) {
+            if (dislike) {
+                postDislike();
+            } else {
+                deleteDislike();
+            }
+        }
+
+    }
 
     const prevCard = () => {
+        updateDB();
         setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
-        setLike(false);
-        setDislike(false);
     }
     const nextCard = () => {
+        updateDB();
         setVehicleItem((vehicleItem + 1) % allVehicles.length);
-        setLike(false);
-        setDislike(false);
     }
 
     const handleDrawerOpen = () => {
@@ -370,6 +483,7 @@ export const InitialView = props => {
 
                     <VehicleCard className="card"
                                thisVehicle={allVehicles[vehicleItem]}
+                               //thisLike={like}
                     />
 
                     <Badge
