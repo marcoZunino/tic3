@@ -28,6 +28,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import {ErrorMessage} from "../errorMessage";
 import logo from "../../images/logoCompletoN.png";
 import {MainListItems} from "./mainListItems";
+import {viewChange, updateViewChange} from "../../index";
 
 export const InitialView = props => {
 
@@ -38,6 +39,7 @@ export const InitialView = props => {
         user = location.state.user;
         userId = location.state.userId;
     }
+    //useEffect(updateViewChange,[]);
 
     const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
@@ -287,12 +289,7 @@ export const InitialView = props => {
     useEffect(() => {
         setLike(userLikes.includes(vehicleItem));
         setDislike(userDislikes.includes(vehicleItem));
-    })
-
-    useEffect(() => {
-        setLikeChange(false);
-        setDislikeChange(false);
-    }, [vehicleItem])
+    });
 
     const updateDB = () => {
 
@@ -314,17 +311,22 @@ export const InitialView = props => {
 
     }
 
-    const prevCard = () => {
+    useEffect(() => {
         updateDB();
+        setLikeChange(false);
+        setDislikeChange(false);
+    }, [viewChange]); //vehicleitem
+
+    const prevCard = () => {
         setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
     }
     const nextCard = () => {
-        updateDB();
         setVehicleItem((vehicleItem + 1) % allVehicles.length);
     }
 
     const handleDrawerOpen = () => {
         setOpen(true);
+        updateViewChange();
     };
     const handleDrawerClose = () => {
         setOpen(false);
