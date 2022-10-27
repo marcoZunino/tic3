@@ -39,7 +39,7 @@ export const InitialView = props => {
         userId = location.state.userId;
     }
 
-    const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
+    let images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg"];
 
@@ -48,6 +48,8 @@ export const InitialView = props => {
     const [allVehicles, setAll] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
+    const [getVehicles, setGetVehicles] = useState(false);
+    const [imagenes, setImagenes] = useState([]);
 
     const [vehicleItem, setVehicleItem] = useState(0);
 
@@ -102,6 +104,20 @@ export const InitialView = props => {
 
                 if (res["result"] === "ok") {
                     setAll(res["data"]);
+                    console.log(res["data"][0]['image']);
+
+                    // Seteamos las imagenes
+                    let imgs = [];
+                    let p = 0;
+                    console.log("LONGITUD: ", res["data"].length)
+                    for (let i = 0; i < res["data"].length; i++){
+                        // Colocamos image.src en la lista
+                        imgs[p] = `data:image/png;base64,${res["data"][i]["image"]}`;
+                        p = p+1;
+                    }
+                    setImagenes(imgs);
+                    setGetVehicles(true);
+
                 } else {
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
@@ -139,6 +155,9 @@ export const InitialView = props => {
         if (thisVehicle === undefined) {
             return null;
         }
+        if(!getVehicles){
+            return null;
+        }
 
         return (
             <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
@@ -146,7 +165,7 @@ export const InitialView = props => {
                     component="img"
                     height="400"
                     //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
-                    image={images[vehicleItem]}
+                    image={imagenes[vehicleItem]}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
