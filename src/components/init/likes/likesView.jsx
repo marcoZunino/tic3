@@ -29,7 +29,6 @@ import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import ChatIcon from "@mui/icons-material/Chat";
-import {updateViewChange} from "../../../index";
 
 export const LikesView = props => {
 
@@ -40,7 +39,6 @@ export const LikesView = props => {
         user = location.state.user;
         userId = location.state.userId;
     }
-    //useEffect(updateViewChange,[]);
 
     const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
