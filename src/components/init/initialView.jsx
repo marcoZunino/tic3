@@ -39,9 +39,9 @@ export const InitialView = props => {
         userId = location.state.userId;
     }
 
-    const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
-        "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
+    const images = ["https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://upload.wikimedia.org/wikipedia/commons/4/46/Enzo_FerRari.jpg"];
 
     const [errorMessage, setMsg] = useState('');
@@ -50,6 +50,7 @@ export const InitialView = props => {
 
     const [allVehicles, setAllVehicles] = useState([]);
     const [vehicleItem, setVehicleItem] = useState(0);
+    const [prevItem, setPrevItem] = useState(0);
 
     const [userLikes, setUserLikes] = useState([]);
     const [userDislikes, setUserDislikes] = useState([]);
@@ -59,9 +60,9 @@ export const InitialView = props => {
     const [likeChange, setLikeChange] = useState(false);
     const [dislikeChange, setDislikeChange] = useState(false);
 
-    const vehicleId = () => {
-        if (allVehicles.length !== 0) {
-            return allVehicles[vehicleItem]["id"];
+    const vehicleId = (id) => {
+        if (allVehicles[id] !== undefined) {
+            return allVehicles[id]["id"];
         }
         return undefined;
     }
@@ -83,13 +84,13 @@ export const InitialView = props => {
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("All vehicles result is:", res["result"]);
+                //console.log("All vehicles result is:", res["result"]);
                 console.log("All vehicles data is:", res["data"]);
 
                 if (res["result"] === "ok") {
                     setAllVehicles(res["data"]);
                 } else {
-                    console.log("error: ", res["data"]);
+                    console.log("all vehicles error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
@@ -151,7 +152,7 @@ export const InitialView = props => {
 
         if (!like) {
 
-            setUserLikes(userLikes.concat(vehicleId()));
+            setUserLikes(userLikes.concat(vehicleId(vehicleItem)));
 
             if (dislike) {
                 toDislike();
@@ -162,7 +163,8 @@ export const InitialView = props => {
             // DELETE request
 
             //setLike(false);
-            setUserLikes(userLikes.filter(item => item !== vehicleId())); // remove
+            setUserLikes(userLikes.filter(item => item !== vehicleId(vehicleItem))); // remove
+            setDislikeChange(!dislikeChange);
 
         }
 
@@ -179,7 +181,7 @@ export const InitialView = props => {
             // POST dislike
 
             //setDislike(true);
-            setUserDislikes(userDislikes.concat(vehicleId()));
+            setUserDislikes(userDislikes.concat(vehicleId(vehicleItem)));
 
             if (like) { // si intento dar dislike cuando di like
                 toLike();  // deshace like
@@ -189,7 +191,8 @@ export const InitialView = props => {
             // DELETE
 
             //setDislike(false);
-            setUserDislikes(userDislikes.filter(item => item !== vehicleId()));
+            setUserDislikes(userDislikes.filter(item => item !== vehicleId(vehicleItem)));
+            setLikeChange(!likeChange);
 
         }
 
@@ -197,9 +200,9 @@ export const InitialView = props => {
         setDislikeChange(!dislikeChange);
     }
 
-    const postLike = () => {
+    const postLike = (vID) => {
         //Parametros de la funcion POST
-        const params = { vehiculo: vehicleId(), comprador: userId };
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
         const options = {
             method: 'POST',
             headers: {
@@ -213,11 +216,7 @@ export const InitialView = props => {
             .then(data => data)
             .then(res => {
                 try {
-                    console.log(res.status);
-                    console.log(res.ok);
-                    //console.log(res.json());
-                    console.log(res);
-                    //console.log(res.id);
+                    console.log("like POST res:", res);
                     if (!res.ok) {
                         setMsg("Error en like")
                     }
@@ -232,9 +231,9 @@ export const InitialView = props => {
 
     }
 
-    const postDislike = () => {
+    const postDislike = (vID) => {
 
-        const params = { vehiculo: vehicleId(), comprador: userId };
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
         const options = {
             method: 'POST',
             headers: {
@@ -248,11 +247,7 @@ export const InitialView = props => {
             .then(data => data)
             .then(res => {
                 try {
-                    console.log(res.status);
-                    console.log(res.ok);
-                    //console.log(res.json());
-                    console.log(res);
-                    //console.log(res.id);
+                    console.log("dislike POST res: ", res);
                     if (!res.ok) {
                         setMsg("Error en dislike")
                     }
@@ -273,65 +268,53 @@ export const InitialView = props => {
         getUserLikes();
         getUserDislikes();
 
-        // const likes = getUserLikes();
-        // const dislikes = getUserDislikes();
-        // for (let i = 0; i < allVehicles.length; i++) {
-        //
-        //     for (let like in likes) {
-        //         if (vehicleId() === like["vehiculo"]) {
-        //             setUserLikes(userLikes.concat(i));
-        //         }
-        //     }
-        //
-        //     for (let dislike in dislikes) {
-        //         if (vehicleId() === dislike["vehiculo"]) {
-        //             setUserDislikes(userDislikes.concat(i));
-        //         }
-        //     }
-        //
-        //
-        // }
-
     }, []);
 
     useEffect(() => {
-        setLike(userLikes.includes(vehicleId()));
-        setDislike(userDislikes.includes(vehicleId()));
+        setLike(userLikes.includes(vehicleId(vehicleItem)));
+        setDislike(userDislikes.includes(vehicleId(vehicleItem)));
     });
 
-    const updateDB = () => {
+    const updateDB = (vID) => {
 
         if (likeChange) {
             if (like) {
-                postLike();
+                postLike(vID);
             } else {
-                deleteLike();
+                deleteLike(vID);
             }
         }
 
         if (dislikeChange) {
             if (dislike) {
-                postDislike();
+                postDislike(vID);
             } else {
-                deleteDislike();
+                deleteDislike(vID);
             }
         }
 
     }
 
-    useEffect(() => { // cargar likes y dislikes al pasar de una publicacion a otra y al cambiar de vista
-        updateDB();
+    useEffect(() => { // cargar likes y dislikes al pasar de una publicacion a otra
+        updateDB(prevItem);
         setLikeChange(false);
         setDislikeChange(false);
-    }, [vehicleItem, viewChange]);
+
+    }, [vehicleItem]);
+
+    useEffect(() => { // cargar likes y dislikes al cambiar de vista
+        updateDB(vehicleItem);
+    }, [viewChange]);
 
     const prevCard = () => {
+        setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
         setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
     }
     const nextCard = () => {
+        setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
         setVehicleItem((vehicleItem + 1) % allVehicles.length);
-        console.log("likes: ", userLikes);
-        console.log("dislikes: ", userDislikes);
+        // console.log("likes: ", userLikes);
+        // console.log("dislikes: ", userDislikes);
     }
 
     const handleDrawerOpen = () => {
