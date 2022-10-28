@@ -39,7 +39,7 @@ export const InitialView = props => {
         userId = location.state.userId;
     }
 
-    let images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
+    const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/4/46/Enzo_FerRari.jpg"];
@@ -55,8 +55,6 @@ export const InitialView = props => {
     const [userDislikes, setUserDislikes] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
-    const [getVehicles, setGetVehicles] = useState(false);
-    const [imagenes, setImagenes] = useState([]);
 
     const [likeChange, setLikeChange] = useState(false);
     const [dislikeChange, setDislikeChange] = useState(false);
@@ -262,7 +260,6 @@ export const InitialView = props => {
                 } catch (e) {
                     console.log(e.message);
                     setMsg("Unexpected error");
-
                 }
             })
 
@@ -352,9 +349,6 @@ export const InitialView = props => {
         if (thisVehicle === undefined) {
             return null;
         }
-        if(!getVehicles){
-            return null;
-        }
 
         return (
             <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
@@ -362,7 +356,7 @@ export const InitialView = props => {
                     component="img"
                     height="400"
                     //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
-                    image={imagenes[vehicleItem]}
+                    image={images[vehicleItem]}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
@@ -410,7 +404,7 @@ export const InitialView = props => {
             <AppBar
                 position="absolute"
                 className="appBarShift"
-                    //{open && "appBarShift"}
+                //{open && "appBarShift"}
             >
                 {ErrorMessage(errorMessage, setMsg)}
 
@@ -447,38 +441,38 @@ export const InitialView = props => {
                     </Typography>
 
                     { !userId && (
-                    <IconButton color="inherit"
-                                onClick={() => navigate("/")}
-                    >
-                        <Badge
-                            //badgeContent={40}
-                            color="secondary"
-
+                        <IconButton color="inherit"
+                                    onClick={() => navigate("/")}
                         >
-                            <AccountCircleIcon className="icon" />
-                        </Badge>
-                        <label className="label">
-                            Iniciar sesión
-                        </label>
-                    </IconButton>
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+
+                            >
+                                <AccountCircleIcon className="icon" />
+                            </Badge>
+                            <label className="label">
+                                Iniciar sesión
+                            </label>
+                        </IconButton>
 
                     )}
 
                     { userId && (
-                    <IconButton color="inherit"
-                                onClick={back}
-                    >
-
-                        <Badge
-                            //badgeContent={40}
-                            color="secondary"
+                        <IconButton color="inherit"
+                                    onClick={back}
                         >
-                            <ArrowCircleLeftIcon className="icon" />
-                        </Badge>
-                        <label className="label">
-                            Cerrar sesión
-                        </label>
-                    </IconButton>
+
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+                            >
+                                <ArrowCircleLeftIcon className="icon" />
+                            </Badge>
+                            <label className="label">
+                                Cerrar sesión
+                            </label>
+                        </IconButton>
 
                     )}
 
@@ -488,17 +482,17 @@ export const InitialView = props => {
             </AppBar>
 
             {open && (
-            <Drawer variant="permanent" className="drawerPaper" open={open} >
-                        <div className="toolbar2">
-                            <div className="toolbarIcon">
-                                <IconButton onClick={handleDrawerClose} >
-                                    <ArrowCircleRightIcon className="item-icon" />
-                                </IconButton>
-                            </div>
-                            {/*<Divider />*/}
-                            <MainListItems user={user} userId={userId} />
+                <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    <div className="toolbar2">
+                        <div className="toolbarIcon">
+                            <IconButton onClick={handleDrawerClose} >
+                                <ArrowCircleRightIcon className="item-icon" />
+                            </IconButton>
                         </div>
-            </Drawer>
+                        {/*<Divider />*/}
+                        <MainListItems user={user} userId={userId} />
+                    </div>
+                </Drawer>
             )}
 
             {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
@@ -529,8 +523,8 @@ export const InitialView = props => {
                     </Badge>
 
                     <VehicleCard className="card"
-                               thisVehicle={allVehicles[vehicleItem]}
-                               //thisLike={like}
+                                 thisVehicle={allVehicles[vehicleItem]}
+                        //thisLike={like}
                     />
 
                     <Badge
