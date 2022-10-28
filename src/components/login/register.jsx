@@ -10,7 +10,6 @@ export const Register = props => {
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
-    const [id, setId] = useState('');
 
     const handleMail = (event) => {
         setMail(event.target.value);
@@ -38,7 +37,8 @@ export const Register = props => {
                 // Si respondio bien pasamos el id:
                 const url_comprador = "http://localhost:8000/api/comprador";
                 if (res["result"] === "valid") {
-                    setId(res['user']);
+                    const id = res['user'];
+
                     const data = {user : res['user']}; //User o id?
                     console.log("RESULT ID USER: ", res['user']);
                     const options = {
@@ -52,13 +52,16 @@ export const Register = props => {
                     fetch(url_comprador, options)
                         .then(data => data)
                         .then(res => {
-                            if(res.ok){ // Indica si la respuesta fue afirmativa
-                                navigate("/home", {state: {user: mail, userId: id}});
+
+                            if (res.ok) { // Indica si la respuesta fue afirmativa
+                                navigate("/home", { state: { user: mail, userId: id } });
                             }
-                            else{
-                                setMsg('No fue posible ingresar usuario')
+                            else {
+                                setMsg('No fue posible ingresar usuario');
                             }
+
                         })
+
                 }
                 else{
                     setMsg('No fue posible ingresar usuario');
@@ -68,7 +71,49 @@ export const Register = props => {
 
     const navigate = useNavigate();
 
-    const signInFunction = () => { // NO FUNCIONA !!!
+    const post_comprador = () => {
+        // Buscamos el id del usuario con un get, y luego agregamos el id
+        const params = { mail: mail, password: password };
+        const url_user = `http://localhost:8000/api/user?${new URLSearchParams(params)}`;
+        fetch(url_user)
+            .then(data => data.json())
+            .then(res => {
+                // Si respondio bien pasamos el id:
+                const url_comprador = "http://localhost:8000/api/comprador";
+                if (res["result"] === "valid") {
+                    //setId(res['user']);
+                    const id = res['user'];
+
+                    const data = {user : res['user']}; //User o id?
+                    console.log("RESULT ID USER: ", res['user']);
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json;charset=UTF-8'
+                        },
+                        body:JSON.stringify(data)
+                    };
+                    fetch(url_comprador, options)
+                        .then(data => data)
+                        .then(res => {
+
+                            if (res.ok) { // Indica si la respuesta fue afirmativa
+                                navigate("/home", { state: { user: mail, userId: id } });
+                            }
+                            else {
+                                setMsg('No fue posible ingresar usuario');
+                            }
+
+                        })
+
+                }
+                else{
+                    setMsg('No fue posible ingresar usuario');
+                }
+            });
+    }
+    const signInFunction = () => {
         setMsg('');
 
 
@@ -76,7 +121,7 @@ export const Register = props => {
             setMsg("Campos vacios");
             return;
         }
-        if(password !== password2){
+        if (password !== password2) {
             setMsg("Constraseñas no coinciden");
 
         } else {
@@ -100,7 +145,6 @@ export const Register = props => {
                         //element.innerHTML = res.id;
                         console.log(res.json());
                         console.log(res)
-                        console.log(res.id)
                         if(res.ok){ // Indica si la respuesta fue afirmativa
                             post_comprador();
                             // navigate("/home", {state: {user: mail, userId: undefined}});
@@ -134,7 +178,6 @@ export const Register = props => {
             </div>
         );
     }
-
     // Si el sucede un error en el registro, no mostramos los botones de ingreso
     const buttonIngreso = msg => {
         if(msg === ''){
@@ -159,8 +202,6 @@ export const Register = props => {
         }
         return null;
     }
-
-
 
     return (
         <div className="base-container" ref={props.containerRef}>

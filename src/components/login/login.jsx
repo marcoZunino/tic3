@@ -13,7 +13,6 @@ export const Login = props => {
     const handleMail = (event) => {
         setMail(event.target.value);
     }
-
     const handlePassword = (event) => {
         setPw(event.target.value);
     }

@@ -9,6 +9,13 @@ import {InitialView, LikesView, PubsView} from "./components";
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// export let viewChange = false;
+// export const updateViewChange = () => {
+//     viewChange = !viewChange;
+//     console.log("viewChange: ", viewChange);
+// }
+
 root.render(
   <React.StrictMode>
       <BrowserRouter>
