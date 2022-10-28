@@ -355,9 +355,8 @@ export const InitialView = props => {
                 <CardMedia
                     component="img"
                     height="400"
-                    //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
                     image={images[vehicleItem]}
-                    //image=thisVehicle["imagen"]
+                    //image={`data:image/png;base64,${thisVehicle["image"]}`}
                     alt="imagen prueba"
                 />
                 <CardContent>

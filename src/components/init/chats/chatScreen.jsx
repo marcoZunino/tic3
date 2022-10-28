@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import "./chatScreen.css";
 import {Avatar} from "@mui/material";
 
-export const chatScreen = props => {
+export const ChatScreen = props => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([
         {
@@ -61,5 +61,3 @@ export const chatScreen = props => {
         </div>
     );
 }
-
-export default chatScreen;

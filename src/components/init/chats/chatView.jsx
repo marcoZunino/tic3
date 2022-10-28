@@ -31,6 +31,9 @@ import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import ChatIcon from "@mui/icons-material/Chat";
+import {ChatScreen} from "./chatScreen";
+import {ChatList} from "./chatList";
+import {Chat} from "./chat";
 
 
 export const ChatView = props => {
@@ -49,8 +52,7 @@ export const ChatView = props => {
 
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
-    const [allLikes, setAllLikes] = useState([]);
-    const [like, setLike] = useState(false);
+    const [allChats, setAllChats] = useState([]);
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
@@ -69,7 +71,7 @@ export const ChatView = props => {
 
     const getAllChats = () => {
 
-        const url = `http://localhost:8000/api/vehiculo`
+        const url = `http://localhost:8000/api/chat`
         fetch(url)
             .then(data => data.json())
             .then(res => {
@@ -77,7 +79,7 @@ export const ChatView = props => {
                 console.log("Data is:", res["data"]);
 
                 if (res["result"] === "ok") {
-                    setAllLikes(res["data"]);
+                    setAllChats(res["data"]);
                 } else {
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
@@ -209,8 +211,10 @@ export const ChatView = props => {
 
                 <div className="chat-container" >
 
-                    <chat> </chat>
-                    <chatScreen></chatScreen>
+                    <ChatList/>
+
+
+                    <ChatScreen/>
                 </div>
 
             </main>

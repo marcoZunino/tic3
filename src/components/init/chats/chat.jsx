@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import {Avatar} from "@mui/material";
 import React from "react";
 
-export const chat = props => {
+export const Chat = props => {
     const message = props.message;
     const name = props.name;
     const profilePic = props.profilePic;
@@ -25,5 +25,3 @@ export const chat = props => {
     );
 
 }
-
-export default chat;
