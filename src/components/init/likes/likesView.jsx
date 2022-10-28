@@ -8,7 +8,7 @@ import {
     Badge,
     CssBaseline,
     Divider,
-    Drawer, Grid,
+    Drawer,
     IconButton,
     Toolbar,
     Typography
@@ -25,12 +25,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {ArrowCircleRight} from "@mui/icons-material";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import {ErrorMessage} from "../../errorMessage";
-import logo from "../../../images/logoCompletoN.png";
-import {MainListItems} from "../mainListItems";
-import ChatIcon from "@mui/icons-material/Chat";
+import {ErrorMessage} from "../errorMessage";
+import logo from "../../images/logoCompletoN.png";
+import {MainListItems} from "./mainListItems";
 
-export const LikesView = props => {
+export const InitialView = props => {
 
     let user = props.user;
     let userId = props.userId;
@@ -42,12 +41,30 @@ export const LikesView = props => {
 
     const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg"];
+        "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/4/46/Enzo_FerRari.jpg"];
 
-    const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
-    const [allLikes, setAllLikes] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [viewChange, setViewChange] = useState(false);
+
+    const [allVehicles, setAllVehicles] = useState([]);
+    const [vehicleItem, setVehicleItem] = useState(0);
+
+    const [userLikes, setUserLikes] = useState([]);
+    const [userDislikes, setUserDislikes] = useState([]);
     const [like, setLike] = useState(false);
+    const [dislike, setDislike] = useState(false);
+
+    const [likeChange, setLikeChange] = useState(false);
+    const [dislikeChange, setDislikeChange] = useState(false);
+
+    const vehicleId = () => {
+        if (allVehicles.length !== 0) {
+            return allVehicles[vehicleItem]["id"];
+        }
+        return undefined;
+    }
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
@@ -55,39 +72,46 @@ export const LikesView = props => {
         //navigate("/");
     }
 
-    const undoLike = () => {
-        if (userId === undefined) { //sin permisos
-            askLogin();
-            return;
-        }
-        //sacar de la lista de likes
-        //delete en la bd
-
-        if (like) {
-            setLike(false);
-        }
-    }
-
-    const openChat = () => {
-        return null;
-    }
-
     const navigate = useNavigate();
     const back = () => {
         navigate("/");
     }
 
-    const getAllLikes = () => {
+    const getAllVehicles = () => { // falta filtrar para descartar los vehiculos likeados o dislikeados
+
+        const url = `http://localhost:8000/api/vehiculo`
+        fetch(url)
+            .then(data => data.json())
+            .then(res => {
+                console.log("All vehicles result is:", res["result"]);
+                console.log("All vehicles data is:", res["data"]);
+
+                if (res["result"] === "ok") {
+                    setAllVehicles(res["data"]);
+                } else {
+                    console.log("error: ", res["data"]);
+                    setMsg(res["data"]);
+                }
+            })
+
+    }
+
+    const getUserLikes = () => {
 
         const params = { comprador: userId };
         const url = `http://localhost:8000/api/like?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("Likes get result is:", res);
+                const dataList = res["data"];
+                console.log("Likes get result is:", dataList);
 
                 if (res["result"] === "ok") {
-                    setAllLikes(res["data"]);
+                    let ids = [];
+                    for (let i = 0; i < dataList.length; i++) { // traer los id de vehiculos con like
+                        ids.push(dataList[i]["vehiculo"]);
+                    }
+                    setUserLikes(userLikes.concat(ids));
                 } else {
                     console.log("error like");
                     setMsg(res["result"]);
@@ -95,37 +119,244 @@ export const LikesView = props => {
             })
 
     }
+    const getUserDislikes = () => {
+
+        const params = { comprador: userId };
+        const url = `http://localhost:8000/api/dislike?${new URLSearchParams(params)}`
+        fetch(url)
+            .then(data => data.json())
+            .then(res => {
+                const dataList = res["data"];
+                console.log("Dislikes result is:", dataList);
+
+                if (res["result"] === "ok") {
+                    let ids = [];
+                    for (let i = 0; i < dataList.length; i++) { // traer los id de vehiculos con dislike
+                        ids.push(dataList[i]["vehiculo"]);
+                    }
+                    setUserDislikes(userDislikes.concat(ids));
+                } else {
+                    console.log("error dislike");
+                    setMsg(res["result"]);
+                }
+            })
+
+    }
+
+    const toLike = () => {
+        if (userId === undefined) { // sin permisos
+            askLogin();
+            return;
+        }
+
+        if (!like) {
+
+            setUserLikes(userLikes.concat(vehicleId()));
+
+            if (dislike) {
+                toDislike();
+            }
+
+        } else { // deshacer like
+
+            // DELETE request
+
+            //setLike(false);
+            setUserLikes(userLikes.filter(item => item !== vehicleId())); // remove
+
+        }
+
+        setLikeChange(!likeChange);
+    }
+    const toDislike = () => {
+        if (userId === undefined) { //sin permisos
+            askLogin();
+            return;
+        }
+
+        if (!dislike) {
+
+            // POST dislike
+
+            //setDislike(true);
+            setUserDislikes(userDislikes.concat(vehicleId()));
+
+            if (like) { // si intento dar dislike cuando di like
+                toLike();  // deshace like
+            }
+
+        } else { //deshacer dislike
+            // DELETE
+
+            //setDislike(false);
+            setUserDislikes(userDislikes.filter(item => item !== vehicleId()));
+
+        }
+
+
+        setDislikeChange(!dislikeChange);
+    }
+
+    const postLike = () => {
+        //Parametros de la funcion POST
+        const params = { vehiculo: vehicleId(), comprador: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/like`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log(res.status);
+                    console.log(res.ok);
+                    //console.log(res.json());
+                    console.log(res);
+                    //console.log(res.id);
+                    if (!res.ok) {
+                        setMsg("Error en like")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+    }
+    const deleteLike = () => { //!!!!
+
+    }
+
+    const postDislike = () => {
+
+        const params = { vehiculo: vehicleId(), comprador: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/dislike`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log(res.status);
+                    console.log(res.ok);
+                    //console.log(res.json());
+                    console.log(res);
+                    //console.log(res.id);
+                    if (!res.ok) {
+                        setMsg("Error en dislike")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+
+    }
+    const deleteDislike = () => { //!!!!
+
+    }
 
     useEffect(() => {
-        if (userId === undefined) {
-            askLogin();
-        } else {
-            getAllLikes();
-        }
+        getAllVehicles();
+        getUserLikes();
+        getUserDislikes();
+
+        // const likes = getUserLikes();
+        // const dislikes = getUserDislikes();
+        // for (let i = 0; i < allVehicles.length; i++) {
+        //
+        //     for (let like in likes) {
+        //         if (vehicleId() === like["vehiculo"]) {
+        //             setUserLikes(userLikes.concat(i));
+        //         }
+        //     }
+        //
+        //     for (let dislike in dislikes) {
+        //         if (vehicleId() === dislike["vehiculo"]) {
+        //             setUserDislikes(userDislikes.concat(i));
+        //         }
+        //     }
+        //
+        //
+        // }
+
     }, []);
+
+    useEffect(() => {
+        setLike(userLikes.includes(vehicleId()));
+        setDislike(userDislikes.includes(vehicleId()));
+    });
+
+    const updateDB = () => {
+
+        if (likeChange) {
+            if (like) {
+                postLike();
+            } else {
+                deleteLike();
+            }
+        }
+
+        if (dislikeChange) {
+            if (dislike) {
+                postDislike();
+            } else {
+                deleteDislike();
+            }
+        }
+
+    }
+
+    useEffect(() => { // cargar likes y dislikes al pasar de una publicacion a otra y al cambiar de vista
+        updateDB();
+        setLikeChange(false);
+        setDislikeChange(false);
+    }, [vehicleItem, viewChange]);
+
+    const prevCard = () => {
+        setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
+    }
+    const nextCard = () => {
+        setVehicleItem((vehicleItem + 1) % allVehicles.length);
+        console.log("likes: ", userLikes);
+        console.log("dislikes: ", userDislikes);
+    }
 
     const handleDrawerOpen = () => {
         setOpen(true);
+        setViewChange(!viewChange);
     };
     const handleDrawerClose = () => {
         setOpen(false);
     };
 
-    const LikeCard = props => {
+    const VehicleCard = props => {
 
         const thisVehicle = props.thisVehicle;
-        const item = props.item;
 
         if (thisVehicle === undefined) {
             return null;
         }
 
         return (
-            <Card sx={{maxWidth: 300, maxHeight: 200}} classname="card">
+            <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
                 <CardMedia
                     component="img"
                     height="400"
-                    image={images[item]}
+                    //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
+                    image={images[vehicleItem]}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
@@ -144,7 +375,7 @@ export const LikesView = props => {
                 </CardContent>
                 <CardActions className="cont">
 
-                    <Button className="btnCont" onClick={undoLike} size="large">
+                    <Button className="btnCont" onClick={toLike} size="large">
                         { !like && (
                             <ThumbUpOffAltIcon className="like" />
                         )}
@@ -153,14 +384,19 @@ export const LikesView = props => {
                         )}
                     </Button>
 
-                    <Button className="btnCont" onClick={openChat} size="large">
-                        <ChatIcon className="item-icon"/>
+                    <Button className="btnCont" onClick={toDislike} size="large">
+                        { !dislike && (
+                            <ThumbDownOffAltIcon className="dislike" />
+                        )}
+                        { dislike && (
+                            <ThumbDownIcon className="dislike" />
+                        )}
                     </Button>
 
                 </CardActions>
             </Card>
         )
-    };  //reemplazar por una card mas chica
+    };
 
     return (
         <div className="root">
@@ -193,6 +429,7 @@ export const LikesView = props => {
                         <img src={logo}  alt="logo"/>
                     </div>
 
+
                     <Typography
                         component="h1"
                         variant="h6"
@@ -200,7 +437,7 @@ export const LikesView = props => {
                         noWrap
                         className="title"
                     >
-                        Mis likes
+                        Página de inicio
                     </Typography>
 
                     { !userId && (
@@ -260,6 +497,8 @@ export const LikesView = props => {
 
             {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
 
+
+
             <main className="init-content">
 
                 <div className="appBarSpacer" />
@@ -277,17 +516,23 @@ export const LikesView = props => {
 
                 <div className="card-container" >
 
-                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                        {Array.from(Array(6)).map((_, index) => (
-                            <Grid xs={2} sm={4} md={4} key={index}>
-                                <LikeCard className="card"
-                                          thisVehicle={allLikes[index]}
-                                          item={index % allLikes.length}
-                                    //thisVehicle={undefined}
-                                />
-                            </Grid>
-                        ))}
-                    </Grid>
+                    <Badge
+                        onClick={prevCard}
+                    >
+                        <ArrowCircleLeftIcon className="arrow" />
+                    </Badge>
+
+                    <VehicleCard className="card"
+                                 thisVehicle={allVehicles[vehicleItem]}
+                        //thisLike={like}
+                    />
+
+                    <Badge
+                        onClick={nextCard}
+                    >
+                        <ArrowCircleRightIcon className="arrow" />
+                    </Badge>
+
 
                 </div>
 
