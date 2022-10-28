@@ -347,5 +347,4 @@ export const InitialView = props => {
 
     );
 
-
 }
