@@ -41,7 +41,8 @@ export const InitialView = props => {
 
     const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg"];
+        "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/4/46/Enzo_FerRari.jpg"];
 
     const [errorMessage, setMsg] = useState('');
     const [open, setOpen] = useState(false);
@@ -165,7 +166,7 @@ export const InitialView = props => {
 
         }
 
-        setLikeChange(true);
+        setLikeChange(!likeChange);
     }
     const toDislike = () => {
         if (userId === undefined) { //sin permisos
@@ -193,7 +194,7 @@ export const InitialView = props => {
         }
 
 
-        setDislikeChange(true);
+        setDislikeChange(!dislikeChange);
     }
 
     const postLike = () => {

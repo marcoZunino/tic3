@@ -79,22 +79,22 @@ export const LikesView = props => {
 
     const getAllLikes = () => {
 
-        const url = `http://localhost:8000/api/like`
+        const params = { comprador: userId };
+        const url = `http://localhost:8000/api/like?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("Result is:", res["result"]);
-                console.log("Data is:", res["data"]);
+                console.log("Likes get result is:", res);
 
                 if (res["result"] === "ok") {
                     setAllLikes(res["data"]);
                 } else {
-                    console.log("error: ", res["data"]);
-                    setMsg(res["data"]);
+                    console.log("error like");
+                    setMsg(res["result"]);
                 }
             })
 
-    } //falta filtrar por id segun likes
+    }
 
     useEffect(() => {
         if (userId === undefined) {
