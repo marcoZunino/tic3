@@ -39,7 +39,7 @@ export const InitialView = props => {
         userId = location.state.userId;
     }
 
-    const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
+    let images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/4/46/Enzo_FerRari.jpg"];
@@ -55,6 +55,8 @@ export const InitialView = props => {
     const [userDislikes, setUserDislikes] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
+    const [getVehicles, setGetVehicles] = useState(false);
+    const [imagenes, setImagenes] = useState([]);
 
     const [likeChange, setLikeChange] = useState(false);
     const [dislikeChange, setDislikeChange] = useState(false);
@@ -260,6 +262,7 @@ export const InitialView = props => {
                 } catch (e) {
                     console.log(e.message);
                     setMsg("Unexpected error");
+
                 }
             })
 
@@ -349,6 +352,9 @@ export const InitialView = props => {
         if (thisVehicle === undefined) {
             return null;
         }
+        if(!getVehicles){
+            return null;
+        }
 
         return (
             <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
@@ -356,7 +362,7 @@ export const InitialView = props => {
                     component="img"
                     height="400"
                     //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
-                    image={images[vehicleItem]}
+                    image={imagenes[vehicleItem]}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
