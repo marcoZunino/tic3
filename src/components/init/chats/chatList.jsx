@@ -1,7 +1,7 @@
 import React from 'react';
 import './chats.css';
 
-export const chats = props => {
+export const chatList = props => {
     return (
         <div className = 'chats'>
             <chat
