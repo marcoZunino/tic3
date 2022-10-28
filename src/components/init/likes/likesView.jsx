@@ -79,7 +79,9 @@ export const InitialView = props => {
 
     const getAllVehicles = () => { // falta filtrar para descartar los vehiculos likeados o dislikeados
 
-        const url = `http://localhost:8000/api/vehiculo`
+        // Para hacer el request se necesita pasar el id del usuario
+        const params = {  };
+        const url = `http://localhost:8000/api/vehiculo${new URLSearchParams(params)}`;
         fetch(url)
             .then(data => data.json())
             .then(res => {
