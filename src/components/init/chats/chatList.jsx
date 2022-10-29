@@ -1,10 +1,12 @@
 import React from 'react';
-import './chats.css';
+import './chat.css';
+import {Chat} from "./chat";
 
-export const chatList = props => {
+export const ChatList = props => {
+
     return (
         <div className = 'chats'>
-            <chat
+            <Chat
                 name = 'Marco'
                 message = 'Hola Fede'
                 timestamp = 'Hace 30 segundos'
@@ -12,5 +14,3 @@ export const chatList = props => {
             />
         </div>)
 }
-
-export default chats;
