@@ -425,7 +425,7 @@ export const InitialView = props => {
             <AppBar
                 position="absolute"
                 className="appBarShift"
-                //{open && "appBarShift"}
+                color="transparent"
             >
                 {ErrorMessage(errorMessage, setMsg)}
 
@@ -436,15 +436,11 @@ export const InitialView = props => {
                     )}
 
                     <IconButton
-                        color="inherit"
                         aria-label="Open drawer"
                         onClick={handleDrawerOpen}
                         className="menuButton"
-                        //     classes.menuButton,
-                        //     this.state.open && classes.menuButtonHidden,
-                        // )}
                     >
-                        <MenuIcon/>
+                        <MenuIcon sx={{ color: "white" }}/>
                     </IconButton>
                     <div className="image2">
                         <img src={logo}  alt="logo"/>
@@ -454,7 +450,7 @@ export const InitialView = props => {
                     <Typography
                         component="h1"
                         variant="h6"
-                        color="inherit"
+                        color="white"
                         noWrap
                         className="title"
                     >
@@ -500,64 +496,54 @@ export const InitialView = props => {
                     {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
 
                 </Toolbar>
-            </AppBar>
 
-            {open && (
-                <Drawer variant="permanent" className="drawerPaper" open={open} >
-                    <div className="toolbar2">
-                        <div className="toolbarIcon">
-                            <IconButton onClick={handleDrawerClose} >
-                                <ArrowCircleRightIcon className="item-icon" />
-                            </IconButton>
+                {open && (
+                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                        <div className="toolbar2">
+                            <div className="toolbarIcon">
+                                <IconButton onClick={handleDrawerClose} >
+                                    <ArrowCircleRightIcon className="item-icon" />
+                                </IconButton>
+                            </div>
+                            {/*<Divider />*/}
+                            <MainListItems user={user} userId={userId} />
                         </div>
-                        {/*<Divider />*/}
-                        <MainListItems user={user} userId={userId} />
+                    </Drawer>
+                )}
+
+                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
+
+                <main className="init-content">
+
+                    <Typography variant="h5" gutterBottom component="h2" color="black"
+                                sx={{marginBottom: "-60px"}}>
+                        Bienvenido {user}
+                    </Typography>
+
+                    <div className="card-container" >
+
+                        <Badge
+                            onClick={prevCard}
+                        >
+                            <ArrowCircleLeftIcon className="arrow" />
+                        </Badge>
+
+                        <VehicleCard className="card"
+                                     thisVehicle={allVehicles[vehicleItem]}
+                            //thisLike={like}
+                        />
+
+                        <Badge
+                            onClick={nextCard}
+                        >
+                            <ArrowCircleRightIcon className="arrow" />
+                        </Badge>
+
+
                     </div>
-                </Drawer>
-            )}
 
-            {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
-
-
-
-            <main className="init-content">
-
-                <div className="appBarSpacer" />
-
-                <Typography variant="h4" gutterBottom component="h2">
-                    ------------
-                </Typography>
-                {/*<Typography component="div" className="chartContainer">*/}
-                {/*    <MenuIcon />*/}
-                {/*</Typography>*/}
-
-                <Typography variant="h5" gutterBottom component="h2">
-                    Bienvenido {user}
-                </Typography>
-
-                <div className="card-container" >
-
-                    <Badge
-                        onClick={prevCard}
-                    >
-                        <ArrowCircleLeftIcon className="arrow" />
-                    </Badge>
-
-                    <VehicleCard className="card"
-                                 thisVehicle={allVehicles[vehicleItem]}
-                        //thisLike={like}
-                    />
-
-                    <Badge
-                        onClick={nextCard}
-                    >
-                        <ArrowCircleRightIcon className="arrow" />
-                    </Badge>
-
-
-                </div>
-
-            </main>
+                </main>
+            </AppBar>
         </div>
 
     );

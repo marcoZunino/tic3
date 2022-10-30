@@ -4,37 +4,23 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
-    AppBar, Avatar,
+    AppBar,
     Badge,
     CssBaseline,
-    Divider,
-    Drawer, Grid,
+    Drawer,
     IconButton,
     Toolbar,
     Typography
 } from "@mui/material";
 
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {ArrowCircleRight} from "@mui/icons-material";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
-import ChatIcon from "@mui/icons-material/Chat";
 import {ChatScreen} from "./chatScreen";
 import {ChatList} from "./chatList";
-import {Chat} from "./chat";
-
 
 export const ChatView = props => {
 
@@ -45,10 +31,6 @@ export const ChatView = props => {
         user = location.state.user;
         userId = location.state.userId;
     }
-
-    const images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
-        "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
-        "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg"];
 
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
@@ -109,7 +91,7 @@ export const ChatView = props => {
             <AppBar
                 position="absolute"
                 className="appBarShift"
-                //{open && "appBarShift"}
+                color="transparent"
             >
                 {ErrorMessage(errorMessage, setMsg)}
 
@@ -120,15 +102,11 @@ export const ChatView = props => {
                     )}
 
                     <IconButton
-                        color="inherit"
                         aria-label="Open drawer"
                         onClick={handleDrawerOpen}
                         className="menuButton"
-                        //     classes.menuButton,
-                        //     this.state.open && classes.menuButtonHidden,
-                        // )}
                     >
-                        <MenuIcon/>
+                        <MenuIcon sx={{ color: "white" }}/>
                     </IconButton>
                     <div className="image2">
                         <img src={logo}  alt="logo"/>
@@ -137,7 +115,7 @@ export const ChatView = props => {
                     <Typography
                         component="h1"
                         variant="h6"
-                        color="inherit"
+                        color="white"
                         noWrap
                         className="title"
                     >
@@ -183,41 +161,35 @@ export const ChatView = props => {
                     {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
 
                 </Toolbar>
-            </AppBar>
 
-            {open && (
-                <Drawer variant="permanent" className="drawerPaper" open={open} >
-                    <div className="toolbar2">
-                        <div className="toolbarIcon">
-                            <IconButton onClick={handleDrawerClose} >
-                                <ArrowCircleRightIcon className="item-icon" />
-                            </IconButton>
+                {open && (
+                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                        <div className="toolbar2">
+                            <div className="toolbarIcon">
+                                <IconButton onClick={handleDrawerClose} >
+                                    <ArrowCircleRightIcon className="item-icon" />
+                                </IconButton>
+                            </div>
+                            {/*<Divider />*/}
+                            <MainListItems user={user} userId={userId} />
                         </div>
-                        {/*<Divider />*/}
-                        <MainListItems user={user} userId={userId} />
+                    </Drawer>
+                )}
+
+                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
+
+                <main className="init-content">
+
+                    <div className="chat-container" >
+
+                        <ChatList/>
+
+
+                        <ChatScreen/>
                     </div>
-                </Drawer>
-            )}
 
-            {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
-
-            <main className="init-content">
-
-                <div className="appBarSpacer" />
-
-                <Typography variant="h4" gutterBottom component="h2">
-                    ------------
-                </Typography>
-
-                <div className="chat-container" >
-
-                    <ChatList/>
-
-
-                    <ChatScreen/>
-                </div>
-
-            </main>
+                </main>
+            </AppBar>
         </div>
 
     );
