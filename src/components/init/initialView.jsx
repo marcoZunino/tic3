@@ -374,7 +374,7 @@ export const InitialView = props => {
         }
 
         return (
-            <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
+            <Card sx={{maxWidth: 600, maxHeight: 600, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
                 <CardMedia
                     component="img"
                     height="400"

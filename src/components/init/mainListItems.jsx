@@ -15,18 +15,23 @@ export const MainListItems = props => {
 
     const navigate = useNavigate();
 
+    const goTo = (route) => {
+
+        navigate(route, {state: {user: user, userId: userId}});
+    }
+
+    const home = () => {
+        goTo("/home");
+    }
     const pubsView = () => {
-        navigate("/home/pubs", {state: {user: user, userId: userId}});
+        goTo("/home/pubs");
     };
     const likesView = () => {
-        navigate("/home/likes", {state: {user: user, userId: userId}});
+        goTo("/home/likes");
     };
     const chatsView = () => {
-        navigate("/home/chats", {state: {user: user, userId: userId}});
+        goTo("/home/chats");
     };
-    const home = () => {
-        navigate("/home", {state: {user: user, userId: userId}});
-    }
 
     return (
         <div>

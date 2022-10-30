@@ -5,7 +5,9 @@
 
 .toolbar {
   padding-right: 24px; // keep right padding when drawer closed
+  height: 70px;
   background-color: #f36424;
+  box-shadow: 0 0 12px 2px rgb(243, 101, 36);
 
 }
 .toolbarIcon {
@@ -101,10 +103,6 @@
 
 //.appBarSpacer: theme.mixins.toolbar,
 
-.appBarSpacer {
-  margin-top: 100px;
-}
-
 .init-content {
   flex-grow: 1;
   padding: 30px;
@@ -144,15 +142,7 @@
   }
 }
 
-.chartContainer {
-  margin-left: 22px;
 
-
-}
-
-.tableContainer {
-  height: 320px;
-}
 .h5 {
   margin-bottom: 50px;
 }
@@ -266,7 +256,5 @@
 }
 
 .card {
-
-
 
 }

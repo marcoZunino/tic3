@@ -109,7 +109,7 @@ export const PubsView = props => {
         }
 
         return (
-            <Card sx={{maxWidth: 300, maxHeight: 200}} classname="card">
+            <Card sx={{maxWidth: 300, maxHeight: 200, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
                 <CardMedia
                     component="img"
                     height="60"
