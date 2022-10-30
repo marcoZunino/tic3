@@ -378,9 +378,9 @@ export const InitialView = props => {
                 <CardMedia
                     component="img"
                     height="400"
-                    image={images[vehicleItem]}
-                    //image={`data:image/png;base64,${thisVehicle["image"]}`}
-                    alt="imagen prueba"
+                    //image={images[vehicleItem]}
+                    image={images[vehicleItem] || `data:image/png;base64,${thisVehicle["imagen"]}`}
+                    alt="imagen del vehiculo"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
