@@ -2,12 +2,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
-    AppBar, Avatar,
+    AppBar,
     Badge,
     CssBaseline,
-    Divider,
     Drawer,
     IconButton,
     Toolbar,
@@ -22,7 +21,6 @@ import Button from '@mui/material/Button';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {ArrowCircleRight} from "@mui/icons-material";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import {ErrorMessage} from "../errorMessage";
@@ -151,36 +149,29 @@ export const InitialView = props => {
         }
 
         if (!like) {
-
             setUserLikes(userLikes.concat(vehicleId(vehicleItem)));
 
             if (dislike) {
-                toDislike();
+                toDislike(); //!
             }
 
         } else { // deshacer like
 
-            // DELETE request
-
-            //setLike(false);
             setUserLikes(userLikes.filter(item => item !== vehicleId(vehicleItem))); // remove
-            setDislikeChange(!dislikeChange);
 
         }
 
         setLikeChange(!likeChange);
     }
+
     const toDislike = () => {
+
         if (userId === undefined) { //sin permisos
             askLogin();
             return;
         }
 
         if (!dislike) {
-
-            // POST dislike
-
-            //setDislike(true);
             setUserDislikes(userDislikes.concat(vehicleId(vehicleItem)));
 
             if (like) { // si intento dar dislike cuando di like
@@ -188,11 +179,8 @@ export const InitialView = props => {
             }
 
         } else { //deshacer dislike
-            // DELETE
 
-            //setDislike(false);
             setUserDislikes(userDislikes.filter(item => item !== vehicleId(vehicleItem)));
-            setLikeChange(!likeChange);
 
         }
 
@@ -227,7 +215,32 @@ export const InitialView = props => {
                 }
             })
     }
-    const deleteLike = () => { //!!!!
+    const deleteLike = (vID) => {
+        //Parametros de la funcion DELETE
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/like`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("like DELETE res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en delete like")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
 
     }
 
@@ -259,7 +272,32 @@ export const InitialView = props => {
             })
 
     }
-    const deleteDislike = () => { //!!!!
+    const deleteDislike = (vID) => {
+        //Parametros de la funcion DELETE
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/dislike`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("dislike DELETE res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en delete dislike")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
 
     }
 
@@ -268,12 +306,12 @@ export const InitialView = props => {
         getUserLikes();
         getUserDislikes();
 
-    }, []);
+    }, []); // cargar estado inicial
 
     useEffect(() => {
         setLike(userLikes.includes(vehicleId(vehicleItem)));
         setDislike(userDislikes.includes(vehicleId(vehicleItem)));
-    });
+    }); // actualizar botones de like / dislike
 
     const updateDB = (vID) => {
 
@@ -293,18 +331,20 @@ export const InitialView = props => {
             }
         }
 
-    }
+    } // actualizar likes y dislikes del vehiculo vID
 
-    useEffect(() => { // cargar likes y dislikes al pasar de una publicacion a otra
+    useEffect(() => {
         updateDB(prevItem);
         setLikeChange(false);
         setDislikeChange(false);
 
-    }, [vehicleItem]);
+    }, [vehicleItem]);  // cargar like y dislike al pasar de una publicacion a otra
 
-    useEffect(() => { // cargar likes y dislikes al cambiar de vista
+    useEffect(() => {
         updateDB(vehicleItem);
-    }, [viewChange]);
+        setLikeChange(false);
+        setDislikeChange(false);
+    }, [viewChange]); // cargar like y dislike al cambiar de vista
 
     const prevCard = () => {
         setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
