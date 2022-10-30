@@ -2,12 +2,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
-    AppBar, Avatar,
+    AppBar,
     Badge,
     CssBaseline,
-    Divider,
     Drawer, Grid,
     IconButton,
     Toolbar,
@@ -19,12 +18,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {ArrowCircleRight} from "@mui/icons-material";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
@@ -69,12 +63,12 @@ export const PubsView = props => {
 
     const getAllPubs = () => {
 
-        const url = `http://localhost:8000/api/vehiculo`
+        const params = { vendedor: userId };
+        const url = `http://localhost:8000/api/vehiculo?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("Result is:", res["result"]);
-                console.log("Data is:", res["data"]);
+                console.log("Pubs result is:", res["data"]);
 
                 if (res["result"] === "ok") {
                     setAllPubs(res["data"]);
@@ -84,7 +78,7 @@ export const PubsView = props => {
                 }
             })
 
-    } //falta filtrar por id segun vendedor
+    }
 
     useEffect(() => {
         if (userId === undefined) {
@@ -114,9 +108,9 @@ export const PubsView = props => {
             <Card sx={{maxWidth: 300, maxHeight: 200}} classname="card">
                 <CardMedia
                     component="img"
-                    height="400"
-                    image={images[item]}
-                    //image=thisVehicle["imagen"]
+                    height="60"
+                    image={`data:image/png;base64,${thisVehicle["imagen"]}` || images[item]}
+                    //image={`data:image/png;base64,${thisVehicle["imagen"]}`}
                     alt="imagen prueba"
                 />
                 <CardContent>
@@ -263,8 +257,8 @@ export const PubsView = props => {
                         {Array.from(Array(6)).map((_, index) => (
                             <Grid xs={2} sm={4} md={4} key={index}>
                                 <PubCard className="card"
-                                          thisVehicle={allPubs[index]}
-                                          item={index % allPubs.length}
+                                         thisVehicle={allPubs[index]}
+                                         item={index % allPubs.length}
                                     //thisVehicle={undefined}
                                 />
                             </Grid>

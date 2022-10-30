@@ -224,9 +224,9 @@ export const InitialView = props => {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8'
             },
-            body:JSON.stringify(params)
+            //body:JSON.stringify(params)
         };
-        const url = `http://localhost:8000/api/like`
+        const url = `http://localhost:8000/api/like?${new URLSearchParams(params)}`
         fetch(url, options)
             .then(data => data)
             .then(res => {
@@ -281,9 +281,9 @@ export const InitialView = props => {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json;charset=UTF-8'
             },
-            body:JSON.stringify(params)
+            //body:JSON.stringify(params)
         };
-        const url = `http://localhost:8000/api/dislike`
+        const url = `http://localhost:8000/api/dislike?${new URLSearchParams(params)}`
         fetch(url, options)
             .then(data => data)
             .then(res => {
@@ -378,7 +378,6 @@ export const InitialView = props => {
                 <CardMedia
                     component="img"
                     height="400"
-                    //image={images[vehicleItem]}
                     image={images[vehicleItem] || `data:image/png;base64,${thisVehicle["imagen"]}`}
                     alt="imagen del vehiculo"
                 />
