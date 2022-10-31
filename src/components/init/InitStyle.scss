@@ -5,14 +5,15 @@
 
 .toolbar {
   padding-right: 24px; // keep right padding when drawer closed
+  height: 70px;
   background-color: #f36424;
+  box-shadow: 0 0 12px 2px rgb(243, 101, 36);
 
 }
 .toolbarIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  //...theme.mixins.toolbar,
 
   .item-icon {
     display: flex;
@@ -35,6 +36,7 @@
 .label {
   font-size: 18px;
   margin-left: 7px;
+  color: white;
 }
 
 .appBar {
@@ -48,6 +50,8 @@
 .appBarShift {
   margin-left: 100px;
   width: 100% - drawerWidth;
+  background: url("../../images/fondo2.jpg");
+
   //transition: theme.transitions.create(['width', 'margin'], {
   //easing: theme.transitions.easing.sharp,
   //duration: theme.transitions.duration.enteringScreen,
@@ -57,6 +61,7 @@
 .menuButton {
   margin-left: 12px;
   margin-right: 36px;
+  color: white;
 }
 .menuButtonHidden {
   display: none;
@@ -105,10 +110,13 @@
   overflow: auto;
   justify-content: center;
   margin-top: auto;
+  background: transparent;
+  //background: url("../../images/fondo2.jpg");
 
   .card-container {
     display: flex;
     justify-content: center;
+    margin-top: 50px;
 
     .arrow {
       justify-content: center;
@@ -134,15 +142,7 @@
   }
 }
 
-.chartContainer {
-  margin-left: 22px;
 
-
-}
-
-.tableContainer {
-  height: 320px;
-}
 .h5 {
   margin-bottom: 50px;
 }
@@ -256,7 +256,5 @@
 }
 
 .card {
-
-
 
 }

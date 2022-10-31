@@ -2,12 +2,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
-    AppBar, Avatar,
+    AppBar,
     Badge,
     CssBaseline,
-    Divider,
     Drawer, Grid,
     IconButton,
     Toolbar,
@@ -19,12 +18,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {ArrowCircleRight} from "@mui/icons-material";
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
@@ -69,22 +63,26 @@ export const PubsView = props => {
 
     const getAllPubs = () => {
 
-        const url = `http://localhost:8000/api/vehiculo`
+        const params = { vendedor: userId };
+        const url = `http://localhost:8000/api/vehiculo?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("Result is:", res["result"]);
-                console.log("Data is:", res["data"]);
+                console.log("Pubs result is:", res["data"]);
 
                 if (res["result"] === "ok") {
                     setAllPubs(res["data"]);
                 } else {
+                    if (res["data"] === "no hay") {
+                        // "Comenzar a publicar vehiculos!"
+                        return;
+                    }
                     console.log("error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
 
-    } //falta filtrar por id segun vendedor
+    }
 
     useEffect(() => {
         if (userId === undefined) {
@@ -111,12 +109,12 @@ export const PubsView = props => {
         }
 
         return (
-            <Card sx={{maxWidth: 300, maxHeight: 200}} classname="card">
+            <Card sx={{maxWidth: 300, maxHeight: 200, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
                 <CardMedia
                     component="img"
-                    height="400"
-                    image={images[item]}
-                    //image=thisVehicle["imagen"]
+                    height="60"
+                    image={`data:image/png;base64,${thisVehicle["imagen"]}` || images[item]}
+                    //image={`data:image/png;base64,${thisVehicle["imagen"]}`}
                     alt="imagen prueba"
                 />
                 <CardContent>
@@ -149,7 +147,7 @@ export const PubsView = props => {
             <AppBar
                 position="absolute"
                 className="appBarShift"
-                //{open && "appBarShift"}
+                color="transparent"
             >
                 {ErrorMessage(errorMessage, setMsg)}
 
@@ -160,15 +158,11 @@ export const PubsView = props => {
                     )}
 
                     <IconButton
-                        color="inherit"
                         aria-label="Open drawer"
                         onClick={handleDrawerOpen}
                         className="menuButton"
-                        //     classes.menuButton,
-                        //     this.state.open && classes.menuButtonHidden,
-                        // )}
                     >
-                        <MenuIcon/>
+                        <MenuIcon sx={{ color: "white" }}/>
                     </IconButton>
                     <div className="image2">
                         <img src={logo}  alt="logo"/>
@@ -177,7 +171,7 @@ export const PubsView = props => {
                     <Typography
                         component="h1"
                         variant="h6"
-                        color="inherit"
+                        color="white"
                         noWrap
                         className="title"
                     >
@@ -224,64 +218,56 @@ export const PubsView = props => {
                     {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
 
                 </Toolbar>
-            </AppBar>
 
-            {open && (
-                <Drawer variant="permanent" className="drawerPaper" open={open} >
-                    <div className="toolbar2">
-                        <div className="toolbarIcon">
-                            <IconButton onClick={handleDrawerClose} >
-                                <ArrowCircleRightIcon className="item-icon" />
-                            </IconButton>
+                {open && (
+                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                        <div className="toolbar2">
+                            <div className="toolbarIcon">
+                                <IconButton onClick={handleDrawerClose} >
+                                    <ArrowCircleRightIcon className="item-icon" />
+                                </IconButton>
+                            </div>
+                            {/*<Divider />*/}
+                            <MainListItems user={user} userId={userId} />
                         </div>
-                        {/*<Divider />*/}
-                        <MainListItems user={user} userId={userId} />
+                    </Drawer>
+                )}
+
+                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
+
+                <main className="init-content">
+
+                    <Typography variant="h5" gutterBottom component="h2" color="black">
+                        Bienvenido {user}
+                    </Typography>
+
+                    <div className="card-container" >
+
+                        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                            {Array.from(Array(6)).map((_, index) => (
+                                <Grid xs={2} sm={4} md={4} key={index}>
+                                    <PubCard className="card"
+                                             thisVehicle={allPubs[index]}
+                                             item={index % allPubs.length}
+                                        //thisVehicle={undefined}
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+
                     </div>
-                </Drawer>
-            )}
 
-            {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
+                    <div>
+                        <button type="button"
+                                className="btn1"
+                                onClick={newPublish}>
+                            Publicar nuevo vehículo
+                        </button>
+                    </div>
 
-            <main className="init-content">
+                </main>
 
-                <div className="appBarSpacer" />
-
-                <Typography variant="h4" gutterBottom component="h2">
-                    ------------
-                </Typography>
-                {/*<Typography component="div" className="chartContainer">*/}
-                {/*    <MenuIcon />*/}
-                {/*</Typography>*/}
-
-                <Typography variant="h5" gutterBottom component="h2">
-                    Bienvenido {user}
-                </Typography>
-
-                <div className="card-container" >
-
-                    <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                        {Array.from(Array(6)).map((_, index) => (
-                            <Grid xs={2} sm={4} md={4} key={index}>
-                                <PubCard className="card"
-                                          thisVehicle={allPubs[index]}
-                                          item={index % allPubs.length}
-                                    //thisVehicle={undefined}
-                                />
-                            </Grid>
-                        ))}
-                    </Grid>
-
-                </div>
-
-                <div>
-                    <button type="button"
-                            className="btn1"
-                            onClick={newPublish}>
-                        Publicar nuevo vehículo
-                    </button>
-                </div>
-
-            </main>
+            </AppBar>
         </div>
 
     );

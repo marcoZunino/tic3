@@ -2,12 +2,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {
-    AppBar, Avatar,
+    AppBar,
     Badge,
     CssBaseline,
-    Divider,
     Drawer,
     IconButton,
     Toolbar,
@@ -22,7 +21,6 @@ import Button from '@mui/material/Button';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {ArrowCircleRight} from "@mui/icons-material";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import {ErrorMessage} from "../errorMessage";
@@ -39,9 +37,9 @@ export const InitialView = props => {
         userId = location.state.userId;
     }
 
-    let images = ["https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
-        "https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
+    const images = ["https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg",
         "https://upload.wikimedia.org/wikipedia/commons/0/09/1986_Fiat_Uno_Turbo_i.e_%2825420774522%29.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/6/69/Volkswagen_Gol_Hatchback_--_Front.JPG",
         "https://upload.wikimedia.org/wikipedia/commons/4/46/Enzo_FerRari.jpg"];
 
     const [errorMessage, setMsg] = useState('');
@@ -50,20 +48,19 @@ export const InitialView = props => {
 
     const [allVehicles, setAllVehicles] = useState([]);
     const [vehicleItem, setVehicleItem] = useState(0);
+    const [prevItem, setPrevItem] = useState(0);
 
     const [userLikes, setUserLikes] = useState([]);
     const [userDislikes, setUserDislikes] = useState([]);
     const [like, setLike] = useState(false);
     const [dislike, setDislike] = useState(false);
-    const [getVehicles, setGetVehicles] = useState(false);
-    const [imagenes, setImagenes] = useState([]);
 
     const [likeChange, setLikeChange] = useState(false);
     const [dislikeChange, setDislikeChange] = useState(false);
 
-    const vehicleId = () => {
-        if (allVehicles.length !== 0) {
-            return allVehicles[vehicleItem]["id"];
+    const vehicleId = (id) => {
+        if (allVehicles[id] !== undefined) {
+            return allVehicles[id]["id"];
         }
         return undefined;
     }
@@ -85,13 +82,13 @@ export const InitialView = props => {
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("All vehicles result is:", res["result"]);
+                //console.log("All vehicles result is:", res["result"]);
                 console.log("All vehicles data is:", res["data"]);
 
                 if (res["result"] === "ok") {
                     setAllVehicles(res["data"]);
                 } else {
-                    console.log("error: ", res["data"]);
+                    console.log("all vehicles error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
@@ -152,46 +149,38 @@ export const InitialView = props => {
         }
 
         if (!like) {
-
-            setUserLikes(userLikes.concat(vehicleId()));
+            setUserLikes(userLikes.concat(vehicleId(vehicleItem)));
 
             if (dislike) {
-                toDislike();
+                toDislike(); //!
             }
 
         } else { // deshacer like
 
-            // DELETE request
-
-            //setLike(false);
-            setUserLikes(userLikes.filter(item => item !== vehicleId())); // remove
+            setUserLikes(userLikes.filter(item => item !== vehicleId(vehicleItem))); // remove
 
         }
 
         setLikeChange(!likeChange);
     }
+
     const toDislike = () => {
+
         if (userId === undefined) { //sin permisos
             askLogin();
             return;
         }
 
         if (!dislike) {
-
-            // POST dislike
-
-            //setDislike(true);
-            setUserDislikes(userDislikes.concat(vehicleId()));
+            setUserDislikes(userDislikes.concat(vehicleId(vehicleItem)));
 
             if (like) { // si intento dar dislike cuando di like
                 toLike();  // deshace like
             }
 
         } else { //deshacer dislike
-            // DELETE
 
-            //setDislike(false);
-            setUserDislikes(userDislikes.filter(item => item !== vehicleId()));
+            setUserDislikes(userDislikes.filter(item => item !== vehicleId(vehicleItem)));
 
         }
 
@@ -199,9 +188,9 @@ export const InitialView = props => {
         setDislikeChange(!dislikeChange);
     }
 
-    const postLike = () => {
+    const postLike = (vID) => {
         //Parametros de la funcion POST
-        const params = { vehiculo: vehicleId(), comprador: userId };
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
         const options = {
             method: 'POST',
             headers: {
@@ -215,11 +204,7 @@ export const InitialView = props => {
             .then(data => data)
             .then(res => {
                 try {
-                    console.log(res.status);
-                    console.log(res.ok);
-                    //console.log(res.json());
-                    console.log(res);
-                    //console.log(res.id);
+                    console.log("like POST res:", res);
                     if (!res.ok) {
                         setMsg("Error en like")
                     }
@@ -230,13 +215,38 @@ export const InitialView = props => {
                 }
             })
     }
-    const deleteLike = () => { //!!!!
+    const deleteLike = (vID) => {
+        //Parametros de la funcion DELETE
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            //body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/like?${new URLSearchParams(params)}`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("like DELETE res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en delete like")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
 
     }
 
-    const postDislike = () => {
+    const postDislike = (vID) => {
 
-        const params = { vehiculo: vehicleId(), comprador: userId };
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
         const options = {
             method: 'POST',
             headers: {
@@ -250,11 +260,7 @@ export const InitialView = props => {
             .then(data => data)
             .then(res => {
                 try {
-                    console.log(res.status);
-                    console.log(res.ok);
-                    //console.log(res.json());
-                    console.log(res);
-                    //console.log(res.id);
+                    console.log("dislike POST res: ", res);
                     if (!res.ok) {
                         setMsg("Error en dislike")
                     }
@@ -262,12 +268,36 @@ export const InitialView = props => {
                 } catch (e) {
                     console.log(e.message);
                     setMsg("Unexpected error");
-
                 }
             })
 
     }
-    const deleteDislike = () => { //!!!!
+    const deleteDislike = (vID) => {
+        //Parametros de la funcion DELETE
+        const params = { vehiculo: vehicleId(vID), comprador: userId };
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            //body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/dislike?${new URLSearchParams(params)}`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("dislike DELETE res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en delete dislike")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
 
     }
 
@@ -276,65 +306,55 @@ export const InitialView = props => {
         getUserLikes();
         getUserDislikes();
 
-        // const likes = getUserLikes();
-        // const dislikes = getUserDislikes();
-        // for (let i = 0; i < allVehicles.length; i++) {
-        //
-        //     for (let like in likes) {
-        //         if (vehicleId() === like["vehiculo"]) {
-        //             setUserLikes(userLikes.concat(i));
-        //         }
-        //     }
-        //
-        //     for (let dislike in dislikes) {
-        //         if (vehicleId() === dislike["vehiculo"]) {
-        //             setUserDislikes(userDislikes.concat(i));
-        //         }
-        //     }
-        //
-        //
-        // }
-
-    }, []);
+    }, []); // cargar estado inicial
 
     useEffect(() => {
-        setLike(userLikes.includes(vehicleId()));
-        setDislike(userDislikes.includes(vehicleId()));
-    });
+        setLike(userLikes.includes(vehicleId(vehicleItem)));
+        setDislike(userDislikes.includes(vehicleId(vehicleItem)));
+    }); // actualizar botones de like / dislike
 
-    const updateDB = () => {
+    const updateDB = (vID) => {
 
         if (likeChange) {
             if (like) {
-                postLike();
+                postLike(vID);
             } else {
-                deleteLike();
+                deleteLike(vID);
             }
         }
 
         if (dislikeChange) {
             if (dislike) {
-                postDislike();
+                postDislike(vID);
             } else {
-                deleteDislike();
+                deleteDislike(vID);
             }
         }
 
-    }
+    } // actualizar likes y dislikes del vehiculo vID
 
-    useEffect(() => { // cargar likes y dislikes al pasar de una publicacion a otra y al cambiar de vista
-        updateDB();
+    useEffect(() => {
+        updateDB(prevItem);
         setLikeChange(false);
         setDislikeChange(false);
-    }, [vehicleItem, viewChange]);
+
+    }, [vehicleItem]);  // cargar like y dislike al pasar de una publicacion a otra
+
+    useEffect(() => {
+        updateDB(vehicleItem);
+        setLikeChange(false);
+        setDislikeChange(false);
+    }, [viewChange]); // cargar like y dislike al cambiar de vista
 
     const prevCard = () => {
+        setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
         setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
     }
     const nextCard = () => {
+        setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
         setVehicleItem((vehicleItem + 1) % allVehicles.length);
-        console.log("likes: ", userLikes);
-        console.log("dislikes: ", userDislikes);
+        // console.log("likes: ", userLikes);
+        // console.log("dislikes: ", userDislikes);
     }
 
     const handleDrawerOpen = () => {
@@ -352,19 +372,14 @@ export const InitialView = props => {
         if (thisVehicle === undefined) {
             return null;
         }
-        if(!getVehicles){
-            return null;
-        }
 
         return (
-            <Card sx={{maxWidth: 600, maxHeight: 600}} classname="card">
+            <Card sx={{maxWidth: 600, maxHeight: 600, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
                 <CardMedia
                     component="img"
                     height="400"
-                    //image="https://www.quieromotor.es/vehiculos/fotos/B92286947/B92286947-156275.jpg"
-                    image={imagenes[vehicleItem]}
-                    //image=thisVehicle["imagen"]
-                    alt="imagen prueba"
+                    image={images[vehicleItem] || `data:image/png;base64,${thisVehicle["imagen"]}`}
+                    alt="imagen del vehiculo"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
@@ -410,7 +425,7 @@ export const InitialView = props => {
             <AppBar
                 position="absolute"
                 className="appBarShift"
-                    //{open && "appBarShift"}
+                color="transparent"
             >
                 {ErrorMessage(errorMessage, setMsg)}
 
@@ -421,15 +436,11 @@ export const InitialView = props => {
                     )}
 
                     <IconButton
-                        color="inherit"
                         aria-label="Open drawer"
                         onClick={handleDrawerOpen}
                         className="menuButton"
-                        //     classes.menuButton,
-                        //     this.state.open && classes.menuButtonHidden,
-                        // )}
                     >
-                        <MenuIcon/>
+                        <MenuIcon sx={{ color: "white" }}/>
                     </IconButton>
                     <div className="image2">
                         <img src={logo}  alt="logo"/>
@@ -439,7 +450,7 @@ export const InitialView = props => {
                     <Typography
                         component="h1"
                         variant="h6"
-                        color="inherit"
+                        color="white"
                         noWrap
                         className="title"
                     >
@@ -447,48 +458,47 @@ export const InitialView = props => {
                     </Typography>
 
                     { !userId && (
-                    <IconButton color="inherit"
-                                onClick={() => navigate("/")}
-                    >
-                        <Badge
-                            //badgeContent={40}
-                            color="secondary"
-
+                        <IconButton color="inherit"
+                                    onClick={() => navigate("/")}
                         >
-                            <AccountCircleIcon className="icon" />
-                        </Badge>
-                        <label className="label">
-                            Iniciar sesión
-                        </label>
-                    </IconButton>
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+
+                            >
+                                <AccountCircleIcon className="icon" />
+                            </Badge>
+                            <label className="label">
+                                Iniciar sesión
+                            </label>
+                        </IconButton>
 
                     )}
 
                     { userId && (
-                    <IconButton color="inherit"
-                                onClick={back}
-                    >
-
-                        <Badge
-                            //badgeContent={40}
-                            color="secondary"
+                        <IconButton color="inherit"
+                                    onClick={back}
                         >
-                            <ArrowCircleLeftIcon className="icon" />
-                        </Badge>
-                        <label className="label">
-                            Cerrar sesión
-                        </label>
-                    </IconButton>
+
+                            <Badge
+                                //badgeContent={40}
+                                color="secondary"
+                            >
+                                <ArrowCircleLeftIcon className="icon" />
+                            </Badge>
+                            <label className="label">
+                                Cerrar sesión
+                            </label>
+                        </IconButton>
 
                     )}
 
                     {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
 
                 </Toolbar>
-            </AppBar>
 
-            {open && (
-            <Drawer variant="permanent" className="drawerPaper" open={open} >
+                {open && (
+                    <Drawer variant="permanent" className="drawerPaper" open={open} >
                         <div className="toolbar2">
                             <div className="toolbarIcon">
                                 <IconButton onClick={handleDrawerClose} >
@@ -498,51 +508,42 @@ export const InitialView = props => {
                             {/*<Divider />*/}
                             <MainListItems user={user} userId={userId} />
                         </div>
-            </Drawer>
-            )}
+                    </Drawer>
+                )}
 
-            {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
+                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
 
+                <main className="init-content">
 
+                    <Typography variant="h5" gutterBottom component="h2" color="black"
+                                sx={{marginBottom: "-60px"}}>
+                        Bienvenido {user}
+                    </Typography>
 
-            <main className="init-content">
+                    <div className="card-container" >
 
-                <div className="appBarSpacer" />
+                        <Badge
+                            onClick={prevCard}
+                        >
+                            <ArrowCircleLeftIcon className="arrow" />
+                        </Badge>
 
-                <Typography variant="h4" gutterBottom component="h2">
-                    ------------
-                </Typography>
-                {/*<Typography component="div" className="chartContainer">*/}
-                {/*    <MenuIcon />*/}
-                {/*</Typography>*/}
+                        <VehicleCard className="card"
+                                     thisVehicle={allVehicles[vehicleItem]}
+                            //thisLike={like}
+                        />
 
-                <Typography variant="h5" gutterBottom component="h2">
-                    Bienvenido {user}
-                </Typography>
-
-                <div className="card-container" >
-
-                    <Badge
-                        onClick={prevCard}
-                    >
-                        <ArrowCircleLeftIcon className="arrow" />
-                    </Badge>
-
-                    <VehicleCard className="card"
-                               thisVehicle={allVehicles[vehicleItem]}
-                               //thisLike={like}
-                    />
-
-                    <Badge
-                        onClick={nextCard}
-                    >
-                        <ArrowCircleRightIcon className="arrow" />
-                    </Badge>
+                        <Badge
+                            onClick={nextCard}
+                        >
+                            <ArrowCircleRightIcon className="arrow" />
+                        </Badge>
 
 
-                </div>
+                    </div>
 
-            </main>
+                </main>
+            </AppBar>
         </div>
 
     );
