@@ -65,8 +65,7 @@ export const Register = props => {
 
                         })
 
-                }
-                else{
+                } else {
                     setMsg('No fue posible ingresar usuario');
                 }
             });
