@@ -2,6 +2,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import EditIcon from '@mui/icons-material/Edit';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
     AppBar,
@@ -44,16 +45,6 @@ export const PubsView = props => {
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
-
-        //navigate("/");
-    }
-
-    const openChat = () => {
-        return null;
-    }
-
-    const newPublish = () => {
-        return null;
     }
 
     const navigate = useNavigate();
@@ -81,6 +72,91 @@ export const PubsView = props => {
                     setMsg(res["data"]);
                 }
             })
+
+    }
+
+    const openChat = () => {
+        return null;
+    }
+
+    const editPub = () => {
+        return null;
+    }
+
+    const newPublish = () => {
+
+        // registrar al usuario como vendedor al crear su primer publicacion
+        if (allPubs.length === 0) {
+            let ok = false;
+            try {
+                ok = verifyVendedor();
+            } catch (e) {
+                console.log(e.message);
+            }
+
+            if (!ok) { // error en registro como vendedor
+                return;
+            }
+        }
+
+        navigate("new", {state: {user: user, userId: userId}});
+
+    }
+
+    const verifyVendedor = () => {
+        let ok = false;
+
+        // Buscamos el id del usuario con un get para verificar si ya existe el vendedor
+        const params = { id: userId };
+        const urlUser = `http://localhost:8000/api/vendedor?${new URLSearchParams(params)}`;
+        fetch(urlUser)
+            .then(data => data.json())
+            .then(res => {
+                console.log("verify: ", res);
+                if (res["result"] === "true") { // el vendedor ya esta registrado
+                    ok = true;
+                } else if (res["result"] === "false") {
+                    ok = postVendedor();
+                } else {
+                    setMsg("Unexpected error");
+                }
+            });
+
+        return ok;
+    }
+
+    const postVendedor = () => {
+        //Parametros de la funcion POST
+        let ok = false;
+
+        const params = { user: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/vendedor`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("vendedor POST res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en registro de vendedor")
+                        // exception
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+                ok = res.ok;
+            })
+
+        return ok;
 
     }
 
@@ -134,6 +210,10 @@ export const PubsView = props => {
 
                     <Button className="btnCont" onClick={openChat} size="large">
                         <ChatIcon className="item-icon"/>
+                    </Button>
+
+                    <Button className="btnCont" onClick={editPub} size="large">
+                        <EditIcon className="item-icon"/>
                     </Button>
 
                 </CardActions>
@@ -256,6 +336,7 @@ export const PubsView = props => {
                         </Grid>
 
                     </div>
+
 
                     <div>
                         <button type="button"
