@@ -1,5 +1,5 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import {useLocation, useNavigate} from "react-router-dom";
@@ -35,7 +35,7 @@ export const NewPubView = props => {
     const [tipo, setTipo] = useState('');
     const [matricula, setMatricula] = useState('');
     const [precio, setPrecio] = useState('');
-    const [imagen, setImagen] = useState('');
+    const [imagen, setImagen] = useState(null);
 
     const handleMarca = (event) => {
         setMarca(event.target.value);
@@ -58,16 +58,17 @@ export const NewPubView = props => {
 
 
     const navigate = useNavigate();
-    const back = () => {
+    const home = () => {
         navigate("/");
     }
+    const back = () => {
+        navigate("/home/pubs", {state: {user: user, userId: userId}});
+    }
 
-    //!!!
     const postVehiculo = () => {
         //Parametros de la funcion POST
-        let ok = false;
-
-        const params = { user: userId };
+        const params = { vendedor: userId, marca: marca, modelo: modelo, tipo: tipo,
+            matricula: matricula, precio_base: precio, imagen: imagen};
         const options = {
             method: 'POST',
             headers: {
@@ -81,20 +82,19 @@ export const NewPubView = props => {
             .then(data => data)
             .then(res => {
                 try {
-                    console.log("like POST res:", res);
-                    if (!res.ok) {
-                        setMsg("Error en registro de vendedor")
-                        // exception
+                    console.log("vehiculo POST res:", res);
+                    if (res.ok) {
+                        navigate("/home/pubs", {state: {user: user, userId: userId}});
+                    } else {
+                        //navigate("/home/pubs", {state: {user: user, userId: userId}});
+                        setMsg("Error en registro de vehiculo")
                     }
 
                 } catch (e) {
                     console.log(e.message);
                     setMsg("Unexpected error");
                 }
-                ok = res.ok;
             })
-
-        return ok;
 
     }
 
@@ -164,7 +164,7 @@ export const NewPubView = props => {
 
                     { userId && (
                         <IconButton color="inherit"
-                                    onClick={back}
+                                    onClick={home}
                         >
 
                             <Badge
@@ -260,6 +260,11 @@ export const NewPubView = props => {
                                 className="btn1"
                                 onClick={postVehiculo}>
                             Publicar
+                        </button>
+                        <button type="button"
+                                className="btn2"
+                                onClick={back}>
+                            Atrás
                         </button>
                     </div>
 
