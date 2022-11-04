@@ -2,6 +2,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
     AppBar,
@@ -46,9 +48,13 @@ export const InitialView = props => {
     const [open, setOpen] = useState(false);
     const [viewChange, setViewChange] = useState(false);
 
+    const [vehicles, setVehicles] = useState([]);
     const [allVehicles, setAllVehicles] = useState([]);
+
     const [vehicleItem, setVehicleItem] = useState(0);
     const [prevItem, setPrevItem] = useState(0);
+    const [venta, setVenta] = useState(false);
+    const [alquiler, setAlquiler] = useState(false);
 
     const [userLikes, setUserLikes] = useState([]);
     const [userDislikes, setUserDislikes] = useState([]);
@@ -59,8 +65,8 @@ export const InitialView = props => {
     const [dislikeChange, setDislikeChange] = useState(false);
 
     const vehicleId = (id) => {
-        if (allVehicles[id] !== undefined) {
-            return allVehicles[id]["id"];
+        if (vehicles[id] !== undefined) {
+            return vehicles[id]["id"];
         }
         return undefined;
     }
@@ -73,6 +79,7 @@ export const InitialView = props => {
 
     const navigate = useNavigate();
     const back = () => {
+        setViewChange(!viewChange); //para actualizar bd
         navigate("/");
     }
 
@@ -87,6 +94,7 @@ export const InitialView = props => {
 
                 if (res["result"] === "ok") {
                     setAllVehicles(res["data"]);
+                    setVehicles(res["data"]);
                 } else {
                     console.log("all vehicles error: ", res["data"]);
                     setMsg(res["data"]);
@@ -311,7 +319,7 @@ export const InitialView = props => {
     useEffect(() => {
         setLike(userLikes.includes(vehicleId(vehicleItem)));
         setDislike(userDislikes.includes(vehicleId(vehicleItem)));
-    }); // actualizar botones de like / dislike
+    }); // actualizar botones de like / dislike todo el tiempo
 
     const updateDB = (vID) => {
 
@@ -333,6 +341,28 @@ export const InitialView = props => {
 
     } // actualizar likes y dislikes del vehiculo vID
 
+    const filterVenta = () => {
+        if (!venta) {
+            setVehicles(vehicles.filter(item => item["tipo"] === "Venta"));
+        }
+        else {
+            setVehicles(allVehicles);
+        }
+        setVenta(!venta);
+        setViewChange(!viewChange);
+    }
+
+    const filterAlquiler = () => {
+        if (!venta) {
+            setVehicles(vehicles.filter(item => item["tipo"] === "Alquiler"));
+        }
+        else {
+            setVehicles(allVehicles);
+        }
+        setAlquiler(!alquiler);
+        setViewChange(!viewChange);
+    }
+
     useEffect(() => {
         updateDB(prevItem);
         setLikeChange(false);
@@ -348,11 +378,11 @@ export const InitialView = props => {
 
     const prevCard = () => {
         setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
-        setVehicleItem((allVehicles.length + vehicleItem - 1) % allVehicles.length);
+        setVehicleItem((vehicles.length + vehicleItem - 1) % vehicles.length);
     }
     const nextCard = () => {
         setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
-        setVehicleItem((vehicleItem + 1) % allVehicles.length);
+        setVehicleItem((vehicleItem + 1) % vehicles.length);
         // console.log("likes: ", userLikes);
         // console.log("dislikes: ", userDislikes);
     }
@@ -520,6 +550,35 @@ export const InitialView = props => {
                         Bienvenido {user}
                     </Typography>
 
+                    <IconButton color="inherit"
+                                onClick={filterVenta}
+                    >
+                        <Badge
+                            //badgeContent={40}
+                            color="secondary"
+                        >
+                            <FilterAltIcon className="filter_icon"/>
+                        </Badge>
+                        <label className="filter_label">
+                            Filtrar por venta
+                        </label>
+                    </IconButton>
+
+                    <IconButton color="inherit"
+                                onClick={filterAlquiler}
+                    >
+                        <Badge
+                            //badgeContent={40}
+                            color="secondary"
+                            className="filter_badge"
+                        >
+                            <FilterAltIcon className="filter_icon"/>
+                        </Badge>
+                        <label className="filter_label">
+                            Filtrar por alquiler
+                        </label>
+                    </IconButton>
+
                     <div className="card-container" >
 
                         <Badge
@@ -529,7 +588,7 @@ export const InitialView = props => {
                         </Badge>
 
                         <VehicleCard className="card"
-                                     thisVehicle={allVehicles[vehicleItem]}
+                                     thisVehicle={vehicles[vehicleItem]}
                             //thisLike={like}
                         />
 

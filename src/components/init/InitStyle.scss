@@ -258,3 +258,22 @@
 .card {
 
 }
+
+.filter_badge {
+
+  .filter_icon {
+    display: flex;
+    align-self: end;
+    text-align: center;
+    color: black;
+    scale: 125%;
+
+  }
+
+  .filter_label {
+    font-size: 18px;
+    margin-left: 7px;
+    color: black;
+  }
+}
+

@@ -70,6 +70,7 @@ export const LikesView = props => {
 
     const navigate = useNavigate();
     const back = () => {
+
         navigate("/");
     }
 
