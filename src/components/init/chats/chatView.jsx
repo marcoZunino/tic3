@@ -181,11 +181,15 @@ export const ChatView = props => {
                 <main className="init-content">
 
                     <div className="chat-container" >
+                        <div className= "chatList-container">
+                            <ChatList/>
+                        </div>
 
-                        <ChatList/>
+                        <div className= "chatScreen-container">
+                            <ChatScreen/>
+                        </div>
 
 
-                        <ChatScreen/>
                     </div>
 
                 </main>

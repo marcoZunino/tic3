@@ -12,6 +12,7 @@ a{
     color: inherit;
 }
 .chat_details {
+    padding: 5px;
     flex: 1;
 }
 .chat_details >p {
@@ -23,4 +24,40 @@ a{
 
 .chat_images{
     margin-right: 20px;
+}
+.chats{
+    display: flex;
+    flex-direction: column;
+    overflowY: scroll;
+    height: 400px;
+    width: 600px;
+}
+.ChatList{
+
+}
+.chat-container{
+    display: flex;
+    flex-grow: 1;
+    flex-basis: auto;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.chatScreen-container{
+    width: 100%;
+    flex: 1 auto;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.chatList-container{
+    flex: 1 auto;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+.ChatScreen{
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflowY: scroll;
 }

@@ -4,8 +4,8 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
-    AppBar,
-    Badge,
+    AppBar, Avatar,
+    Badge, CardHeader,
     CssBaseline,
     Drawer, Grid,
     IconButton,
@@ -25,6 +25,7 @@ import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import ChatIcon from "@mui/icons-material/Chat";
+import {blue, red} from "@mui/material/colors";
 
 export const LikesView = props => {
 
@@ -43,7 +44,10 @@ export const LikesView = props => {
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
     const [allLikes, setAllLikes] = useState([]);
-    const [like, setLike] = useState(false);
+    const [userLikes, setUserLikes] = useState([]);
+    const [like, setLike] = useState(0);
+    const [likeUndo, setLikeUndo] = useState([]);
+    const [likes, setLikes] = useState([]);
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
@@ -51,19 +55,96 @@ export const LikesView = props => {
         //navigate("/");
     }
 
-    const undoLike = () => {
-        if (userId === undefined) { //sin permisos
-            askLogin();
-            return;
-        }
-        //sacar de la lista de likes
-        //delete en la bd
+    const undoLike = (event) => {
 
-        if (like) {
-            setLike(false);
+        let id_vehiculo = event.currentTarget.getAttribute('vehiculo');
+        let index = event.currentTarget.getAttribute('index');
+        setLike(index);
+
+        if(!likeUndo[index]){
+            console.log("VERDADERO");
         }
+
+        if (!likeUndo[index]) {
+            console.log("Undo like", id_vehiculo);
+            deleteLike(id_vehiculo);
+
+        } else { // agregamos el like:
+            console.log("Post like", id_vehiculo);
+            postLike(id_vehiculo);
+        }
+
+        likeUndo[index] = !likeUndo[index];
+        setLikeUndo(likeUndo);
+
+        return undefined
     }
 
+    useEffect(() => {
+        setLike(1);
+        console.log("Se corre el use efect");
+        console.log(likeUndo);
+    }, [likeUndo, like])
+
+    const postLike = (id_vehiculo) => {
+        //Parametros de la funcion POST
+        const params = { vehiculo:id_vehiculo, comprador: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/like`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("like POST res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en like")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+    }
+
+    const deleteLike = (id_vehiculo) => {
+        //Parametros de la funcion DELETE
+        const params = { vehiculo: id_vehiculo, comprador: userId };
+        const options = {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            //body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/like?${new URLSearchParams(params)}`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("like DELETE res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en delete like")
+                    }
+
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+
+    }
+
+    // POST chat, luego abrirlo en la ventana de chats:
     const openChat = () => {
         return null;
     }
@@ -76,7 +157,7 @@ export const LikesView = props => {
 
     const getAllLikes = () => {
 
-        const params = { comprador: userId };
+        const params = { comprador: userId , info_completa:"1"};
         const url = `http://localhost:8000/api/like?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
@@ -85,12 +166,25 @@ export const LikesView = props => {
 
                 if (res["result"] === "ok") {
                     setAllLikes(res["data"]);
+                    const dataList = res["data"];
+                    let ids = [];
+                    let undoLikes = [];
+                    let likesUser = []
+                    for (let i = 0; i < dataList.length; i++) { // traer los id de vehiculos con like
+                        ids.push(dataList[i]["vehiculo"]);
+                        console.log("Vendedor", dataList[i]["data_vendedor"]);
+                        undoLikes.push(false);
+                        likesUser.push(true);
+                    }
+                    setLikes(likesUser);
+                    setLikeUndo(undoLikes);
+                    setUserLikes(userLikes.concat(ids));
+
                 } else {
                     console.log("error like");
                     setMsg(res["result"]);
                 }
             })
-
     }
 
     useEffect(() => {
@@ -117,35 +211,49 @@ export const LikesView = props => {
             return null;
         }
 
+
+        const clickLike = () =>{
+
+        }
+
+        let show_like = !likeUndo[item];
         return (
-            <Card sx={{maxWidth: 300, maxHeight: 200, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
+            <Card sx={{maxWidth: 400, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
+                <CardHeader
+                    avatar={
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+
+                        </Avatar>
+
+                    }
+                    title={`${thisVehicle["data_vendedor"]["first_name"]} ${thisVehicle["data_vendedor"]["last_name"]}`}
+                />
                 <CardMedia
                     component="img"
-                    height="60"
-                    image={images[item]}
+                    height="200"
+                    image={`data:image/png;base64,${thisVehicle["data_vehiculo"]["imagen"]}`}
                     //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {/*BMW Serie 3*/}
-                        {thisVehicle["marca"]} {"  "}
-                        {thisVehicle["modelo"]}
+                        {thisVehicle["data_vehiculo"]["marca"]} {"  "}
+                        {thisVehicle["data_vehiculo"]["modelo"]}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         {/*65.000 km*/}
-                        Precio base: {thisVehicle["precio_base"]} <br/>
+                        Precio base: {thisVehicle["data_vehiculo"]["precio_base"]} <br/>
                         {/*Kilometraje: {thisVehicle["kilometros"]} <br/>*/}
-                        {thisVehicle["tipo"]}
+                        {thisVehicle["data_vehiculo"]["tipo"]}
                     </Typography>
                 </CardContent>
                 <CardActions className="cont">
-
-                    <Button className="btnCont" onClick={undoLike} size="large">
-                        { !like && (
+                    <Button className="btnCont" onClick={undoLike} vehiculo={thisVehicle["data_vehiculo"]["id"]} index={item} size="large">
+                        { !show_like && (
                             <ThumbUpOffAltIcon className="like" />
                         )}
-                        { like && (
+                        { show_like && (
                             <ThumbUpIcon className="like" />
                         )}
                     </Button>
@@ -157,7 +265,7 @@ export const LikesView = props => {
                 </CardActions>
             </Card>
         )
-    };  //reemplazar por una card mas chica
+    };
 
     return (
         <div className="root">
@@ -254,18 +362,15 @@ export const LikesView = props => {
 
                 <main className="init-content">
 
-                    <Typography variant="h5" gutterBottom component="h2" color="black">
-                        Bienvenido {user}
-                    </Typography>
 
                     <div className="card-container" >
 
-                        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                        <Grid container rowSpacing={1} columnSpacing={1}>
                             {Array.from(Array(6)).map((_, index) => (
-                                <Grid xs={2} sm={4} md={4} key={index}>
+                                <Grid containter columnSpacing={2} xs={2} sm={4} md={4} key={index}>
                                     <LikeCard className="card"
                                               thisVehicle={allLikes[index]}
-                                              item={index % allLikes.length}
+                                              item={index}
                                         //thisVehicle={undefined}
                                     />
                                 </Grid>
