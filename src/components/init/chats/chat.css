@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    height: 70px;
+    height: 80px;
     border-bottom: 1px solid grey;
 }
 
@@ -15,12 +15,14 @@ a{
     flex: 1;
 }
 .chat_details >p {
-    color: grey;
+    color: #f36424;
 }
 .chat_timestamp{
-    color: lightgray;
+    color: #f36424;
 }
 
 .chat_images{
     margin-right: 20px;
 }
+
+

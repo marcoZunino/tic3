@@ -26,9 +26,10 @@ export const ChatScreen = props => {
         setInput('');
     }
 
+
+
     return(
         <div className= 'chatScreen'>
-            <p>CHAT</p>
             {messages.map((message) =>
                 message.name ? (
                 <div className= 'chatScreen_message'>
