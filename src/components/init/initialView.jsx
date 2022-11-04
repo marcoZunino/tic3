@@ -112,7 +112,7 @@ export const InitialView = props => {
                     }
                     setUserLikes(userLikes.concat(ids));
                 } else {
-                    console.log("error like");
+                    console.log("error like", res["result"]);
                     setMsg(res["result"]);
                 }
             })
@@ -135,7 +135,7 @@ export const InitialView = props => {
                     }
                     setUserDislikes(userDislikes.concat(ids));
                 } else {
-                    console.log("error dislike");
+                    console.log("error dislike", res["result"]);
                     setMsg(res["result"]);
                 }
             })
