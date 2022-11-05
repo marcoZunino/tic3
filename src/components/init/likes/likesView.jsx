@@ -1,7 +1,6 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
     AppBar, Avatar,
@@ -25,7 +24,7 @@ import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import ChatIcon from "@mui/icons-material/Chat";
-import {blue, red} from "@mui/material/colors";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const LikesView = props => {
 
@@ -220,7 +219,7 @@ export const LikesView = props => {
             <Card sx={{maxWidth: 400, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
                 <CardHeader
                     avatar={
-                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                        <Avatar sx={{ bgcolor: "#f36424" }} aria-label="recipe">
 
                         </Avatar>
 
@@ -258,7 +257,7 @@ export const LikesView = props => {
                     </Button>
 
                     <Button className="btnCont" onClick={openChat} size="large">
-                        <ChatIcon className="item-icon"/>
+                        <ChatIcon className="chat-icon"/>
                     </Button>
 
                 </CardActions>
@@ -303,6 +302,16 @@ export const LikesView = props => {
                         Mis likes
                     </Typography>
 
+                    <Typography
+                        component="h2"
+                        variant="h6"
+                        color="white"
+                        noWrap
+                        className="title"
+                    >
+                        {user}
+                    </Typography>
+
                     { !userId && (
                         <IconButton color="inherit"
                                     onClick={() => navigate("/")}
@@ -330,7 +339,7 @@ export const LikesView = props => {
                                 //badgeContent={40}
                                 color="secondary"
                             >
-                                <ArrowCircleLeftIcon className="icon" />
+                                <LogoutIcon className="icon" />
                             </Badge>
                             <label className="label">
                                 Cerrar sesión
@@ -339,34 +348,30 @@ export const LikesView = props => {
 
                     )}
 
-                    {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
-
                 </Toolbar>
 
                 {open && (
-                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    <Drawer  anchor={"left"}
+                             className="drawerPaper"
+                             open={open} >
                         <div className="toolbar2">
                             <div className="toolbarIcon">
-                                <IconButton onClick={handleDrawerClose} >
-                                    <ArrowCircleRightIcon className="item-icon" />
+                                <IconButton onClick={handleDrawerClose}>
+                                    <CloseIcon className="item-icon" />
                                 </IconButton>
                             </div>
-                            {/*<Divider />*/}
                             <MainListItems user={user} userId={userId} />
                         </div>
                     </Drawer>
                 )}
 
-                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
-
                 <main className="init-content">
-
 
                     <div className="card-container" >
 
-                        <Grid container rowSpacing={1} columnSpacing={1}>
+                        <Grid sx={{marginTop: "100px", marginLeft: "50px"}} container rowSpacing={1} columnSpacing={1}>
                             {Array.from(Array(6)).map((_, index) => (
-                                <Grid containter columnSpacing={2} xs={2} sm={4} md={4} key={index}>
+                                <Grid sx={{marginBottom: "50px"}} containter columnSpacing={2} xs={2} sm={4} md={4} key={index}>
                                     <LikeCard className="card"
                                               thisVehicle={allLikes[index]}
                                               item={index}

@@ -1,7 +1,6 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import LogoutIcon from '@mui/icons-material/Logout';
 import EditIcon from '@mui/icons-material/Edit';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
@@ -24,6 +23,7 @@ import {ErrorMessage} from "../../errorMessage";
 import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import ChatIcon from "@mui/icons-material/Chat";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const PubsView = props => {
 
@@ -258,6 +258,16 @@ export const PubsView = props => {
                         Mis publicaciones
                     </Typography>
 
+                    <Typography
+                        component="h2"
+                        variant="h6"
+                        color="white"
+                        noWrap
+                        className="title"
+                    >
+                        {user}
+                    </Typography>
+
 
                     { !userId && (
                         <IconButton color="inherit"
@@ -286,7 +296,7 @@ export const PubsView = props => {
                                 //badgeContent={40}
                                 color="secondary"
                             >
-                                <ArrowCircleLeftIcon className="icon" />
+                                <LogoutIcon className="icon" />
                             </Badge>
                             <label className="label">
                                 Cerrar sesión
@@ -300,32 +310,27 @@ export const PubsView = props => {
                 </Toolbar>
 
                 {open && (
-                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    <Drawer  anchor={"left"}
+                             className="drawerPaper"
+                             open={open} >
                         <div className="toolbar2">
                             <div className="toolbarIcon">
-                                <IconButton onClick={handleDrawerClose} >
-                                    <ArrowCircleRightIcon className="item-icon" />
+                                <IconButton onClick={handleDrawerClose}>
+                                    <CloseIcon className="item-icon" />
                                 </IconButton>
                             </div>
-                            {/*<Divider />*/}
                             <MainListItems user={user} userId={userId} />
                         </div>
                     </Drawer>
                 )}
 
-                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
-
                 <main className="init-content">
-
-                    <Typography variant="h5" gutterBottom component="h2" color="black">
-                        Bienvenido {user}
-                    </Typography>
 
                     <div className="card-container" >
 
-                        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                        <Grid sx={{marginTop: "100px"}} container rowSpacing={1} columnSpacing={1}>
                             {Array.from(Array(6)).map((_, index) => (
-                                <Grid xs={2} sm={4} md={4} key={index}>
+                                <Grid sx={{marginBottom: "50px"}} containter columnSpacing={2} xs={2} sm={4} md={4} key={index}>
                                     <PubCard className="card"
                                              thisVehicle={allPubs[index]}
                                              item={index % allPubs.length}

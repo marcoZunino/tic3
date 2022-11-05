@@ -2,8 +2,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import LogoutIcon from '@mui/icons-material/Logout';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
     AppBar,
@@ -69,17 +71,15 @@ export const InitialView = props => {
             return vehicles[id]["id"];
         }
         return undefined;
-    }
+    } // vehicleItem => id de vehiculo
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
-
-        //navigate("/");
     }
 
     const navigate = useNavigate();
     const back = () => {
-        setViewChange(!viewChange); //para actualizar bd
+        setViewChange(!viewChange); // para actualizar bd antes de salir
         navigate("/");
     }
 
@@ -93,15 +93,15 @@ export const InitialView = props => {
                 console.log("All vehicles data is:", res["data"]);
 
                 if (res["result"] === "ok") {
-                    setAllVehicles(res["data"]);
-                    setVehicles(res["data"]);
+                    setAllVehicles(res["data"]); // todos los vehiculos
+                    setVehicles(res["data"]);   // array solo de los vehiculos que se muestran
                 } else {
                     console.log("all vehicles error: ", res["data"]);
                     setMsg(res["data"]);
                 }
             })
 
-    }
+    } // get de todos los vehiculos
 
     const getUserLikes = () => {
 
@@ -118,7 +118,7 @@ export const InitialView = props => {
                     for (let i = 0; i < dataList.length; i++) { // traer los id de vehiculos con like
                         ids.push(dataList[i]["vehiculo"]);
                     }
-                    setUserLikes(userLikes.concat(ids));
+                    setUserLikes(userLikes.concat(ids));    // se agregan los id a userLikes
                 } else {
                     console.log("error like", res["result"]);
                     setMsg(res["result"]);
@@ -156,20 +156,20 @@ export const InitialView = props => {
             return;
         }
 
-        if (!like) {
-            setUserLikes(userLikes.concat(vehicleId(vehicleItem)));
+        if (!like) { // si se intenta dar like
+            setUserLikes(userLikes.concat(vehicleId(vehicleItem))); //agregar id al array de likes
 
-            if (dislike) {
-                toDislike(); //!
+            if (dislike) {  // si le habia dado dislike debe quitarse
+                toDislike(); // dislike => false
             }
 
-        } else { // deshacer like
+        } else { // si se intenta deshacer like
 
-            setUserLikes(userLikes.filter(item => item !== vehicleId(vehicleItem))); // remove
+            setUserLikes(userLikes.filter(item => item !== vehicleId(vehicleItem))); // remove id del array de likes
 
         }
 
-        setLikeChange(!likeChange);
+        setLikeChange(!likeChange); // se notifica cambio en like
     }
 
     const toDislike = () => {
@@ -179,21 +179,20 @@ export const InitialView = props => {
             return;
         }
 
-        if (!dislike) {
-            setUserDislikes(userDislikes.concat(vehicleId(vehicleItem)));
+        if (!dislike) { // si se intenta dar dislike
+            setUserDislikes(userDislikes.concat(vehicleId(vehicleItem))); //agregar id al array de dislikes
 
             if (like) { // si intento dar dislike cuando di like
                 toLike();  // deshace like
             }
 
-        } else { //deshacer dislike
+        } else { //si se intenta deshacer dislike
 
-            setUserDislikes(userDislikes.filter(item => item !== vehicleId(vehicleItem)));
+            setUserDislikes(userDislikes.filter(item => item !== vehicleId(vehicleItem))); // remove del id en array de dislikes
 
         }
 
-
-        setDislikeChange(!dislikeChange);
+        setDislikeChange(!dislikeChange); // notifica cambio en dislike
     }
 
     const postLike = (vID) => {
@@ -317,50 +316,54 @@ export const InitialView = props => {
     }, []); // cargar estado inicial
 
     useEffect(() => {
-        setLike(userLikes.includes(vehicleId(vehicleItem)));
-        setDislike(userDislikes.includes(vehicleId(vehicleItem)));
-    }); // actualizar botones de like / dislike todo el tiempo
+        setLike(userLikes.includes(vehicleId(vehicleItem)));    //si id de vehiculo actual está en likes
+        setDislike(userDislikes.includes(vehicleId(vehicleItem)));    //si id de vehiculo actual está en dislikes
+    }); // actualizar botones de like y dislike constantemente
 
     const updateDB = (vID) => {
 
-        if (likeChange) {
-            if (like) {
+        if (likeChange) {   // si hubo cambio en like
+            if (like) {     // si like quedó en true
                 postLike(vID);
-            } else {
+            } else {     // si like quedó en false
                 deleteLike(vID);
             }
         }
 
-        if (dislikeChange) {
-            if (dislike) {
+        if (dislikeChange) {    // si hubo cambio en dislike
+            if (dislike) {      // si dislike quedó en true
                 postDislike(vID);
-            } else {
+            } else {      // si dislike quedó en false
                 deleteDislike(vID);
             }
         }
 
-    } // actualizar likes y dislikes del vehiculo vID
+    } // actualizar likes y dislikes del vehiculo vID en la bd
 
     const filterVenta = () => {
-        if (!venta) {
-            setVehicles(vehicles.filter(item => item["tipo"] === "Venta"));
-        }
-        else {
+        if (!venta) {   // se dejan solo los vehiculos de tipo Venta
+            setVehicles(allVehicles.filter(item => item["tipo"] === "Venta"));
+            if (alquiler) { // se saca el filtro por alquiler
+                setAlquiler(false);
+            }
+        } else {   // se vuelven a mostrar todos los vehiculos
             setVehicles(allVehicles);
         }
-        setVenta(!venta);
-        setViewChange(!viewChange);
+        setVenta(!venta);   // actualiza filtro de venta
+        setViewChange(!viewChange); // actualiza db
     }
 
     const filterAlquiler = () => {
-        if (!venta) {
-            setVehicles(vehicles.filter(item => item["tipo"] === "Alquiler"));
-        }
-        else {
+        if (!alquiler) {    // se dejan solo los vehiculos de tipo alquiler
+            setVehicles(allVehicles.filter(item => item["tipo"] === "Alquiler"));
+            if (venta) { // se saca el filtro por venta
+                setVenta(false);
+            }
+        } else {    // se vuelven a mostrar todos los vehiculos
             setVehicles(allVehicles);
         }
-        setAlquiler(!alquiler);
-        setViewChange(!viewChange);
+        setAlquiler(!alquiler);     // actualiza filtro de alquiler
+        setViewChange(!viewChange); // actualiza db
     }
 
     useEffect(() => {
@@ -377,19 +380,19 @@ export const InitialView = props => {
     }, [viewChange]); // cargar like y dislike al cambiar de vista
 
     const prevCard = () => {
-        setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
-        setVehicleItem((vehicles.length + vehicleItem - 1) % vehicles.length);
+        setPrevItem(vehicleItem); // guarda item del anterior vehiculo mostrado
+        setVehicleItem((vehicles.length + vehicleItem - 1) % vehicles.length); // item previo
     }
     const nextCard = () => {
-        setPrevItem(vehicleItem); //item del anterior vehiculo mostrado
-        setVehicleItem((vehicleItem + 1) % vehicles.length);
-        // console.log("likes: ", userLikes);
-        // console.log("dislikes: ", userDislikes);
+        setPrevItem(vehicleItem); // guarda item del anterior vehiculo mostrado
+        setVehicleItem((vehicleItem + 1) % vehicles.length); // item siguiente
     }
 
     const handleDrawerOpen = () => {
         setOpen(true);
-        setViewChange(!viewChange);
+        setViewChange(!viewChange); // actualiza db al abrir el menu
+        console.log("to show: ", vehicles);
+        console.log("all: ", allVehicles);
     };
     const handleDrawerClose = () => {
         setOpen(false);
@@ -487,6 +490,16 @@ export const InitialView = props => {
                         Página de inicio
                     </Typography>
 
+                    <Typography
+                        component="h2"
+                        variant="h6"
+                        color="white"
+                        noWrap
+                        className="title"
+                    >
+                        {user}
+                    </Typography>
+
                     { !userId && (
                         <IconButton color="inherit"
                                     onClick={() => navigate("/")}
@@ -514,7 +527,7 @@ export const InitialView = props => {
                                 //badgeContent={40}
                                 color="secondary"
                             >
-                                <ArrowCircleLeftIcon className="icon" />
+                                <LogoutIcon className="icon" />
                             </Badge>
                             <label className="label">
                                 Cerrar sesión
@@ -523,32 +536,24 @@ export const InitialView = props => {
 
                     )}
 
-                    {/*<Avatar alt="logo" src="../../images/logo1.png" />*/}
-
                 </Toolbar>
 
                 {open && (
-                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    <Drawer  anchor={"left"}
+                             className="drawerPaper"
+                             open={open} >
                         <div className="toolbar2">
                             <div className="toolbarIcon">
-                                <IconButton onClick={handleDrawerClose} >
-                                    <ArrowCircleRightIcon className="item-icon" />
+                                <IconButton onClick={handleDrawerClose}>
+                                    <CloseIcon className="item-icon" />
                                 </IconButton>
                             </div>
-                            {/*<Divider />*/}
                             <MainListItems user={user} userId={userId} />
                         </div>
                     </Drawer>
                 )}
 
-                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
-
                 <main className="init-content">
-
-                    <Typography variant="h5" gutterBottom component="h2" color="black"
-                                sx={{marginBottom: "-60px"}}>
-                        Bienvenido {user}
-                    </Typography>
 
                     <IconButton color="inherit"
                                 onClick={filterVenta}
@@ -556,14 +561,20 @@ export const InitialView = props => {
                         <Badge
                             //badgeContent={40}
                             color="secondary"
+                            className="filter_badge"
                         >
-                            <FilterAltIcon className="filter_icon"/>
+                            {venta &&
+                                <CheckBoxIcon className="filter_icon"/>
+                            }
+                            {!venta &&
+                                <CheckBoxOutlineBlankIcon className="filter_icon"/>
+                            }
                         </Badge>
                         <label className="filter_label">
                             Filtrar por venta
                         </label>
                     </IconButton>
-
+                    <br/>
                     <IconButton color="inherit"
                                 onClick={filterAlquiler}
                     >
@@ -572,7 +583,12 @@ export const InitialView = props => {
                             color="secondary"
                             className="filter_badge"
                         >
-                            <FilterAltIcon className="filter_icon"/>
+                            {alquiler &&
+                                <CheckBoxIcon className="filter_icon"/>
+                            }
+                            {!alquiler &&
+                                <CheckBoxOutlineBlankIcon className="filter_icon"/>
+                            }
                         </Badge>
                         <label className="filter_label">
                             Filtrar por alquiler

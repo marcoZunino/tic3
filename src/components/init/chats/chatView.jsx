@@ -2,8 +2,7 @@ import './chatView.css';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
     AppBar,
@@ -21,6 +20,7 @@ import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import {ChatScreen} from "./chatScreen";
 import {ChatList} from "./chatList";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const ChatView = props => {
 
@@ -122,6 +122,16 @@ export const ChatView = props => {
                         Mis chats
                     </Typography>
 
+                    <Typography
+                        component="h2"
+                        variant="h6"
+                        color="white"
+                        noWrap
+                        className="title"
+                    >
+                        {user}
+                    </Typography>
+
                     { !userId && (
                         <IconButton color="inherit"
                                     onClick={() => navigate("/")}
@@ -149,7 +159,7 @@ export const ChatView = props => {
                                 //badgeContent={40}
                                 color="secondary"
                             >
-                                <ArrowCircleLeftIcon className="icon" />
+                                <LogoutIcon className="icon" />
                             </Badge>
                             <label className="label">
                                 Cerrar sesión
@@ -163,20 +173,19 @@ export const ChatView = props => {
                 </Toolbar>
 
                 {open && (
-                    <Drawer variant="permanent" className="drawerPaper" open={open} >
+                    <Drawer  anchor={"left"}
+                             className="drawerPaper"
+                             open={open} >
                         <div className="toolbar2">
                             <div className="toolbarIcon">
-                                <IconButton onClick={handleDrawerClose} >
-                                    <ArrowCircleRightIcon className="item-icon" />
+                                <IconButton onClick={handleDrawerClose}>
+                                    <CloseIcon className="item-icon" />
                                 </IconButton>
                             </div>
-                            {/*<Divider />*/}
                             <MainListItems user={user} userId={userId} />
                         </div>
                     </Drawer>
                 )}
-
-                {!open && (<Drawer variant="permanent" className="drawerPaperClose"/>)}
 
                 <main className="init-content">
 

@@ -90,6 +90,11 @@
   //}),
 }
 
+.toolbar2 {
+  padding-right: 24px; // keep right padding when drawer closed
+  //background-color: #757575;
+}
+
 .drawerPaperClose {
   overflow-x: hidden;
 
@@ -106,17 +111,16 @@
 .init-content {
   flex-grow: 1;
   padding: 30px;
-  height: 100vh;
+  height: 640px;
   overflow: auto;
   justify-content: center;
   margin-top: auto;
   background: transparent;
-  //background: url("../../images/fondo2.jpg");
 
   .card-container {
     display: flex;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: -80px;
 
     .arrow {
       justify-content: center;
@@ -173,12 +177,16 @@
       margin-left: 120px;
     }
 
-  }
-}
+    .chat-icon {
+      justify-content: center;
+      align-items: center;
+      color: #f36424;
+      scale: 200%;
+      margin-bottom: 10px;
+      margin-left: 120px;
+    }
 
-.toolbar2 {
-  padding-right: 24px; // keep right padding when drawer closed
-  //background-color: #757575;
+  }
 }
 
 .btn3 {
@@ -267,6 +275,7 @@
     text-align: center;
     color: black;
     scale: 125%;
+    margin-right: 10px;
 
   }
 
