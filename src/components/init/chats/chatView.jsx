@@ -53,22 +53,38 @@ export const ChatView = props => {
 
     const getAllChats = () => {
 
-        const url = `http://localhost:8000/api/chat`
+        const params = { comprador: userId , info_completa:"1"};
+        const url = `http://localhost:8000/api/chat?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("Result is:", res["result"]);
-                console.log("Data is:", res["data"]);
+                console.log("Chats get result is:", res);
 
                 if (res["result"] === "ok") {
-                    setAllChats(res["data"]);
+                    setAllChats(res["data"]);   //array de chats
+
+                    // json de cada chat:
+                    // chat {
+                    //        like
+                    //        fechahora
+                    //        calif_vendedor
+                    //        calif_comprador
+                    //        vehiculo {
+                    //                campos de vehiculo
+                    //                imagen
+                    //            }
+                    //        vendedor {
+                    //                campos de vendedor
+                    //            }
+                    //    }
+
                 } else {
-                    console.log("error: ", res["data"]);
-                    setMsg(res["data"]);
+                    console.log("error like");
+                    setMsg(res["result"]);
                 }
             })
 
-    } //falta filtrar por id segun likes
+    }
 
     useEffect(() => {
         if (userId === undefined) {
@@ -76,7 +92,7 @@ export const ChatView = props => {
         } else {
             getAllChats();
         }
-    }, []);
+    }, []);     // cargar estado inicial de chats
 
     const handleDrawerOpen = () => {
         setOpen(true);

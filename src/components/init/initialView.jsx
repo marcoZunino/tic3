@@ -391,8 +391,6 @@ export const InitialView = props => {
     const handleDrawerOpen = () => {
         setOpen(true);
         setViewChange(!viewChange); // actualiza db al abrir el menu
-        console.log("to show: ", vehicles);
-        console.log("all: ", allVehicles);
     };
     const handleDrawerClose = () => {
         setOpen(false);
@@ -411,7 +409,7 @@ export const InitialView = props => {
                 <CardMedia
                     component="img"
                     height="400"
-                    image={images[vehicleItem] || `data:image/png;base64,${thisVehicle["imagen"]}`}
+                    image={`data:image/png;base64,${thisVehicle["imagen"]}`}
                     alt="imagen del vehiculo"
                 />
                 <CardContent>
