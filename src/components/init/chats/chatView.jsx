@@ -207,7 +207,7 @@ export const ChatView = props => {
 
                     <div className="chat-container" >
                         <div className= "chatList-container">
-                            <ChatList/>
+                            <ChatList chats={allChats} />
                         </div>
 
                         <div className= "chatScreen-container">

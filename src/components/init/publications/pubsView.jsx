@@ -85,18 +85,15 @@ export const PubsView = props => {
 
     const newPublish = () => {
 
-        // registrar al usuario como vendedor al crear su primer publicacion
+        // registrar al usuario como vendedor al crear su primera publicacion
         if (allPubs.length === 0) {
-            let ok = false;
             try {
-                ok = verifyVendedor();
+                verifyVendedor();  //verificar si ya está registrado como vendedor
             } catch (e) {
                 console.log(e.message);
+                setMsg("Error al acceder o registrarse como vendedor");
             }
 
-            if (!ok) { // error en registro como vendedor
-                return;
-            }
         }
 
         navigate("new", {state: {user: user, userId: userId}});
@@ -104,7 +101,6 @@ export const PubsView = props => {
     }
 
     const verifyVendedor = () => {
-        let ok = false;
 
         // Buscamos el id del usuario con un get para verificar si ya existe el vendedor
         const params = { id: userId };
@@ -113,22 +109,19 @@ export const PubsView = props => {
             .then(data => data.json())
             .then(res => {
                 console.log("verify: ", res);
-                if (res["result"] === "true") { // el vendedor ya esta registrado
-                    ok = true;
+                if (res["result"] === "true") {
+                    // el vendedor ya esta registrado
                 } else if (res["result"] === "false") {
-                    ok = postVendedor();
+                    postVendedor();     // registrar vendedor
                 } else {
                     setMsg("Unexpected error");
                 }
             });
 
-        return ok;
     }
 
     const postVendedor = () => {
         //Parametros de la funcion POST
-        let ok = false;
-
         const params = { user: userId };
         const options = {
             method: 'POST',
@@ -144,7 +137,9 @@ export const PubsView = props => {
             .then(res => {
                 try {
                     console.log("vendedor POST res:", res);
-                    if (!res.ok) {
+                    if (res.ok) {
+                        //registrado con exito
+                    } else {
                         setMsg("Error en registro de vendedor")
                         // exception
                     }
@@ -153,11 +148,7 @@ export const PubsView = props => {
                     console.log(e.message);
                     setMsg("Unexpected error");
                 }
-                ok = res.ok;
             })
-
-        return ok;
-
     }
 
     useEffect(() => {
