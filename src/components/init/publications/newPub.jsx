@@ -66,9 +66,14 @@ export const NewPubView = props => {
     }
 
     const postVehiculo = () => {
+        console.log(imagen);
+        return;
+        //setImagen(`http://localhost:3000/${imagen}`);
         //Parametros de la funcion POST
         const params = { vendedor: userId, marca: marca, modelo: modelo, tipo: tipo,
-            matricula: matricula, precio_base: precio, imagen: imagen};
+            matricula: matricula, precio_base: precio};
+        //const params = {vendedor: "5", matricula: matricula, tipo:tipo};
+        console.log("USER ID:", userId);
         const options = {
             method: 'POST',
             headers: {
@@ -246,7 +251,7 @@ export const NewPubView = props => {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="imagen">Imagen</label>
-                                <input type="text"
+                                <input type="file"
                                        name="imagen"
                                        placeholder="imagen"
                                        onChange={handleImagen}

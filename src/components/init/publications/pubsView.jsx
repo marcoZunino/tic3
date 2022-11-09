@@ -24,6 +24,7 @@ import logo from "../../../images/logoCompletoN.png";
 import {MainListItems} from "../mainListItems";
 import ChatIcon from "@mui/icons-material/Chat";
 import CloseIcon from "@mui/icons-material/Close";
+import ModeIcon from '@mui/icons-material/Mode';
 
 export const PubsView = props => {
 
@@ -176,10 +177,10 @@ export const PubsView = props => {
         }
 
         return (
-            <Card sx={{maxWidth: 300, maxHeight: 200, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
+            <Card sx={{maxWidth:400, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
                 <CardMedia
                     component="img"
-                    height="60"
+                    height="200"
                     image={`data:image/png;base64,${thisVehicle["imagen"]}` || images[item]}
                     //image={`data:image/png;base64,${thisVehicle["imagen"]}`}
                     alt="imagen prueba"
@@ -198,13 +199,12 @@ export const PubsView = props => {
                     </Typography>
                 </CardContent>
                 <CardActions className="cont">
-
                     <Button className="btnCont" onClick={openChat} size="large">
-                        <ChatIcon className="item-icon"/>
+                        <ChatIcon className="like"/>
                     </Button>
 
                     <Button className="btnCont" onClick={editPub} size="large">
-                        <EditIcon className="item-icon"/>
+                        <ModeIcon className="chat-icon"/>
                     </Button>
 
                 </CardActions>
