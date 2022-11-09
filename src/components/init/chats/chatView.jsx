@@ -35,15 +35,12 @@ export const ChatView = props => {
     const [open, setOpen] = useState(false);
     const [errorMessage, setMsg] = useState('');
     const [allChats, setAllChats] = useState([]);
+    const [chatToShow, setChatToShow] = useState();
 
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
 
         //navigate("/");
-    }
-
-    const openChat = () => {
-        return null;
     }
 
     const navigate = useNavigate();
@@ -62,9 +59,11 @@ export const ChatView = props => {
 
                 if (res["result"] === "ok") {
                     setAllChats(res["data"]);   //array de chats
+                    setChatToShow(res["data"][0])   //set chatScreen al primero
 
                     // json de cada chat:
                     // chat {
+                    //        id
                     //        like
                     //        fechahora
                     //        calif_vendedor
@@ -72,11 +71,11 @@ export const ChatView = props => {
                     //        vehiculo {
                     //                campos de vehiculo
                     //                imagen
-                    //            }
+                    //        }
                     //        vendedor {
                     //                campos de vendedor
-                    //            }
-                    //    }
+                    //        }
+                    // }
 
                 } else {
                     console.log("error like");
@@ -100,6 +99,10 @@ export const ChatView = props => {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const handleSetChatScreen = chat => {
+        setChatToShow(chat);
+    }
 
     return (
         <div className="root">
@@ -206,14 +209,14 @@ export const ChatView = props => {
                 <main className="init-content">
 
                     <div className="chat-container" >
+
                         <div className= "chatList-container">
-                            <ChatList chats={allChats} />
+                            <ChatList chats={allChats} setChatScreen={handleSetChatScreen}/>
                         </div>
 
                         <div className= "chatScreen-container">
-                            <ChatScreen/>
+                            <ChatScreen chat={chatToShow} />
                         </div>
-
 
                     </div>
 

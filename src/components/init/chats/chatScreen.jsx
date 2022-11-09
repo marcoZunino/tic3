@@ -1,14 +1,32 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./chatScreen.css";
 import {Avatar} from "@mui/material";
 
 export const ChatScreen = props => {
+
+    const chat = props.chat;
+
+    useEffect(() => {
+        if (chat) {
+            getAllMessages();
+        }
+    });
+
+
+
+    const getAllMessages = () => {
+        //GET de mensajes del chat (buscar por id de chat)
+        //setMessages(res["data"])
+    }
+
+
+
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState([
         {
             name: 'Marco',
             image: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fes.dreamstime.com%2Fstock-de-ilustraci%25C3%25B3n-icono-de-la-muestra-del-usuario-s%25C3%25ADmbolo-de-la-persona-avatar-humano-image84519083&psig=AOvVaw3quPkcEwLO1PnBAB5JA4Oq&ust=1666869299059000&source=images&cd=vfe&ved=0CA0QjRxqFwoTCOiQu5Xi_foCFQAAAAAdAAAAABAE',
-            message: 'Hola Fede'
+            message: 'kjhjhgk'
         },
         {
             name: 'Marco',
@@ -31,18 +49,18 @@ export const ChatScreen = props => {
     return(
         <div className= 'chatScreen'>
             {messages.map((message) =>
-                message.name ? (
+                chat && chat["vendedor"] && message.name ? (
                 <div className= 'chatScreen_message'>
                     <Avatar
                         className = "chatScreen_image"
                         alt = {message.name}
                         src = {message.image}
                         />
-                    <p className = "chatScreen_text" > {message.message}</p>
+                    <p className = "chatScreen_text" > {message.message} {"id de chat "} {chat["id"]} </p>
                 </div>
             ): (
                 <div className= "chatScreen_message">
-                    <p className = "chatScreen_textUser" > {message.message}</p>
+                    <p className = "chatScreen_textUser" > {message.message} </p>
                 </div>
                 )
             )}
