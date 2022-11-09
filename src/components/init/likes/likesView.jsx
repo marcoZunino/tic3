@@ -87,7 +87,7 @@ export const LikesView = props => {
 
     const postLike = (id_vehiculo) => {
         //Parametros de la funcion POST
-        const params = { vehiculo:id_vehiculo, comprador: userId };
+        const params = { vehiculo: id_vehiculo, comprador: userId };
         const options = {
             method: 'POST',
             headers: {
