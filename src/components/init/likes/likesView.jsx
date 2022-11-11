@@ -146,13 +146,35 @@ export const LikesView = props => {
     // POST chat, luego abrirlo en la ventana de chats:
     const openChat = (event) => {
         let id_vehiculo = event.currentTarget.getAttribute('vehiculo');
-        postChat(id_vehiculo);
+        let id_like = event.currentTarget.getAttribute('like');
+        verifyChatExists(id_like);
         navigate('/home/chats', {state : {user: user, userId: userId, vehiculo: id_vehiculo}});
-        return null;
     }
 
-    const postChat = (id_vehiculo) => {
-        const params = { vehiculo:id_vehiculo, comprador: userId };
+    const verifyChatExists = (likeId) => {
+
+        // Buscamos el id del usuario con un get para verificar si ya existe el vendedor
+        const params = { like: likeId };
+        const urlUser = `http://localhost:8000/api/chat?${new URLSearchParams(params)}`;
+        fetch(urlUser)
+            .then(data => data.json())
+            .then(res => {
+                console.log("verify: ", res);
+                if (res["result"] === "true") {
+                    // return id de chat
+                    //setChatToOpen(res["data"]["id"])
+                } else if (res["result"] === "false") {
+                    postChat(likeId);     // registrar vendedor
+                } else {
+                    setMsg("Unexpected error");
+                }
+            });
+
+    }
+
+
+    const postChat = (likeId) => {
+        const params = { like: likeId };
         const options = {
             method: 'POST',
             headers: {
@@ -167,7 +189,9 @@ export const LikesView = props => {
             .then(res => {
                 try {
                     console.log("like POST res:", res);
-                    if (!res.ok) {
+                    if (res.ok) {
+                        //setChatToOpen(res["data"]["id"])
+                    } else {
                         setMsg("Error en chat")
                     }
 
@@ -240,11 +264,6 @@ export const LikesView = props => {
             return null;
         }
 
-
-        const clickLike = () =>{
-
-        }
-
         let show_like = !likeUndo[item];
         return (
             <Card sx={{maxWidth: 400, boxShadow: "0px 0px 12px 1px #737373"}} classname="card">
@@ -261,7 +280,6 @@ export const LikesView = props => {
                     component="img"
                     height="200"
                     image={`data:image/png;base64,${thisVehicle["data_vehiculo"]["imagen"]}`}
-                    //image=thisVehicle["imagen"]
                     alt="imagen prueba"
                 />
                 <CardContent>
@@ -273,7 +291,7 @@ export const LikesView = props => {
                     <Typography variant="body2" color="text.secondary">
                         {/*65.000 km*/}
                         Precio base: {thisVehicle["data_vehiculo"]["precio_base"]} <br/>
-                        {/*Kilometraje: {thisVehicle["kilometros"]} <br/>*/}
+                        {/*Venta o Alquiler*/}
                         {thisVehicle["data_vehiculo"]["tipo"]}
                     </Typography>
                 </CardContent>
@@ -406,7 +424,6 @@ export const LikesView = props => {
                                     <LikeCard className="card"
                                               thisVehicle={allLikes[index]}
                                               item={index}
-                                        //thisVehicle={undefined}
                                     />
                                 </Grid>
                             ))}
