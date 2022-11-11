@@ -76,7 +76,10 @@ export const PubsView = props => {
 
     }
 
-    const openChat = () => {
+    const openChat = (event) => {
+        // En chat habra que buscar todos los chats del vendedor y del vehiculo:
+        let id_vehiculo = event.currentTarget.getAttribute('vehiculo');
+        navigate('/home/chats', {state : {user : user, userId : userId, vehiculo: id_vehiculo}});
         return null;
     }
 
@@ -199,7 +202,7 @@ export const PubsView = props => {
                     </Typography>
                 </CardContent>
                 <CardActions className="cont">
-                    <Button className="btnCont" onClick={openChat} size="large">
+                    <Button className="btnCont" onClick={openChat} vehiculo={thisVehicle["id"]} size="large">
                         <ChatIcon className="like"/>
                     </Button>
 

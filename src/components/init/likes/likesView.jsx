@@ -144,8 +144,39 @@ export const LikesView = props => {
     }
 
     // POST chat, luego abrirlo en la ventana de chats:
-    const openChat = () => {
+    const openChat = (event) => {
+        let id_vehiculo = event.currentTarget.getAttribute('vehiculo');
+        postChat(id_vehiculo);
+        navigate('/home/chats', {state : {user: user, userId: userId, vehiculo: id_vehiculo}});
         return null;
+    }
+
+    const postChat = (id_vehiculo) => {
+        const params = { vehiculo:id_vehiculo, comprador: userId };
+        const options = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body:JSON.stringify(params)
+        };
+        const url = `http://localhost:8000/api/chat`
+        fetch(url, options)
+            .then(data => data)
+            .then(res => {
+                try {
+                    console.log("like POST res:", res);
+                    if (!res.ok) {
+                        setMsg("Error en chat")
+                    }
+
+                } catch (e) {
+                    console.log(e.message);
+                    setMsg("Unexpected error");
+                }
+            })
+
     }
 
     const navigate = useNavigate();
@@ -256,7 +287,7 @@ export const LikesView = props => {
                         )}
                     </Button>
 
-                    <Button className="btnCont" onClick={openChat} size="large">
+                    <Button className="btnCont" onClick={openChat} size="large" vehiculo={thisVehicle["data_vehiculo"]["id"]}>
                         <ChatIcon className="chat-icon"/>
                     </Button>
 
