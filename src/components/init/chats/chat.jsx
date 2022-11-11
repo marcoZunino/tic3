@@ -29,16 +29,16 @@ export const Chat = props => {
         <div>
             {/*<Link to = {'/chat/${name}'}>*/}
             <div>
-                <div className = 'chat'>
-                    <Avatar className = 'chat_image' src={profilePic}/>
+                <div className='chat'>
+                    <Avatar className = 'chat_images' src={profilePic} alt='chat_image' />
                     <div className= 'chat_details'>
                         { (userType === "comprador") && (
-                            <h2>{chat["vendedor"]["first_name"]}{" "}{chat["vendedor"]["last_name"]}</h2>
+                            <h2 className='chat_info'>{chat["vendedor"]["first_name"]}{" "}{chat["vendedor"]["last_name"]}</h2>
                         )}
                         { (userType === "vendedor") && (
-                            <h2>{chat["comprador"]["first_name"]}{" "}{chat["comprador"]["last_name"]}</h2>
+                            <h2 className='chat_info'>{chat["comprador"]["first_name"]}{" "}{chat["comprador"]["last_name"]}</h2>
                         )}
-                        <h3>{chat["vehiculo"]["marca"]}{" "}{chat["vehiculo"]["modelo"]}</h3>
+                        <h3 className='chat_info'>{chat["vehiculo"]["marca"]}{" "}{chat["vehiculo"]["modelo"]}</h3>
                         {/*<p>{message}</p>*/}
                     </div>
                     <p className= 'chat_timestamp'>{timestamp}</p>

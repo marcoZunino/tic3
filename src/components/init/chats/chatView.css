@@ -29,7 +29,7 @@ a{
     display: flex;
     flex-direction: column;
     /*overflow-y: scroll;*/
-    height: 400px;
+    height: 500px;
     width: 600px;
 }
 .ChatList{
@@ -45,9 +45,11 @@ a{
 }
 .chatScreen-container{
     width: 55%;
+    margin-bottom: 20px;
     flex: 1 auto;
-    flex-direction: column;
+    flex-direction: column-reverse;
     overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 .chatList-container{
     flex: 1 auto;

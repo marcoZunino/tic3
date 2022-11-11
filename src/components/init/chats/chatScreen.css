@@ -1,12 +1,30 @@
 .chatScreen_message{
     display: flex;
     align-items: center;
+    align-self: end;
+    height: fit-content;
+    max-width: 600px;
+    margin-bottom: -30px;
+    margin-top: -30px;
+    padding: 20px;
+}
+
+.chatScreen_message_rec{
+    display: flex;
+    align-items: center;
+    align-self: start;
+    height: fit-content;
+    max-width: 600px;
+    margin-bottom: -30px;
+    margin-top: -30px;
     padding: 20px;
 }
 
 .chatScreen_text{
     margin-left: 0;
-    background-color: #f36424;
+    background-color: rgba(100, 100, 100, 0.9);
+    font-size: 20px;
+    color: #fff;
     padding: 15px;
     border-radius: 20px;
 }
@@ -19,7 +37,9 @@
 
 .chatScreen_textUser{
     margin-left: auto;
-    background-color: grey;
+    background-color: rgba(243, 101, 36, 0.9);
+    font-size: 20px;
+    color: #fff;
     padding: 15px;
     border-radius: 20px;
 }
@@ -39,6 +59,7 @@
     padding: 10px;
     border: none;
     font-size: 20px;
+    border-radius: 30px;
 }
 
 .chatScreen_inputButton{

@@ -81,21 +81,23 @@ export const ChatScreen = props => {
 
     const handleSend = e => {
         e.preventDefault();
-        const message = { contenido: input, enviado_por: userType, chat: chat["id"] };
-        postMessage(message);
-        setMessages([...messages, message]);
-        setInput('');
+        if (input !== '') {
+            const message = {contenido: input, enviado_por: userType, chat: chat["id"]};
+            postMessage(message);
+            setMessages([...messages, message]);
+            setInput('');
+        }
     }
 
     return(
         <div className= 'ChatScreen'>
             {messages.map((message) =>
                 (message["enviado_por"] !==  userType) ? (      //mensajes recibidos
-                    <div className= 'chatScreen_message'>
+                    <div className= 'chatScreen_message_rec'>
                         <Avatar
                             className = "chatScreen_image"
-                            alt = "asdf"//{message.name}
-                            src = ""//{message.image}
+                            alt = "perfil"//{message.name}
+                            //src = ""//{message.image}
                             />
                         <p className = "chatScreen_text" > {message["contenido"]} </p>
                     </div>
