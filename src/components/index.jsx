@@ -11,4 +11,5 @@ export { MainListItems } from "./init/mainListItems";
 export { LikesView } from "./init/likes/likesView";
 export { PubsView } from "./init/publications/pubsView";
 export { ChatView } from "./init/chats/chatView";
-export { NewPubView } from "./init/publications/newPub"
+export { VendedorChatView } from "./init/chats/vendedorChatView";
+export { NewPubView } from "./init/publications/newPub";

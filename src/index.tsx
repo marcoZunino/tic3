@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Route, Routes, BrowserRouter} from "react-router-dom";
-import {InitialView, LikesView, PubsView, NewPubView, ChatView} from "./components";
+import {InitialView, LikesView, PubsView, NewPubView, ChatView, VendedorChatView} from "./components";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -27,6 +27,7 @@ root.render(
               <Route path="/home/pubs/new" element={<NewPubView />} />
               <Route path="/home/vehicle" element={<InitialView />} />
               <Route path="/home/chats" element={<ChatView />} />
+              <Route path="/home/chats/vendedor" element={<VendedorChatView />} />
               <Route path="/profile" element={<InitialView />} />
           </Routes>
       </BrowserRouter>

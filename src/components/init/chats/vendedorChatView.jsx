@@ -22,7 +22,7 @@ import {ChatScreen} from "./chatScreen";
 import {ChatList} from "./chatList";
 import CloseIcon from "@mui/icons-material/Close";
 
-export const ChatView = () => {
+export const VendedorChatView = () => {
 
     let user;
     let userId;
@@ -45,7 +45,6 @@ export const ChatView = () => {
         //navigate("/");
     }
 
-
     const navigate = useNavigate();
     const back = () => {
         navigate("/");
@@ -53,12 +52,12 @@ export const ChatView = () => {
 
     const getAllChats = () => {
 
-        const params = { comprador: userId , info_completa:"1"};
+        const params = { vendedor: userId , info_completa:"1"};
         const url = `http://localhost:8000/api/chat?${new URLSearchParams(params)}`
         fetch(url)
             .then(data => data.json())
             .then(res => {
-                console.log("Chats get result is:", res);
+                console.log("Vendedor chats get result is:", res);
 
                 if (res["result"] === "ok") {
                     setAllChats(res["data"]);   //array de chats
@@ -84,8 +83,8 @@ export const ChatView = () => {
                     //                campos de vehiculo
                     //                imagen
                     //        }
-                    //        vendedor {
-                    //                campos de vendedor
+                    //        comprador {
+                    //                campos de comprador
                     //        }
                     // }
 
@@ -249,12 +248,12 @@ export const ChatView = () => {
                                 </button>
                             </div>
 
-                            <ChatList userType="comprador" chats={allChats} setChatScreen={handleSetChatScreen}/>
+                            <ChatList userType="vendedor" chats={allChats} setChatScreen={handleSetChatScreen}/>
 
                         </div>
 
                         <div className= "chatScreen-container">
-                            <ChatScreen userType="comprador" chat={chatToShow} />
+                            <ChatScreen userType="vendedor" chat={chatToShow} />
                         </div>
 
                     </div>

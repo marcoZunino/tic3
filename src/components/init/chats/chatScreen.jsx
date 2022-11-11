@@ -5,6 +5,7 @@ import {Avatar} from "@mui/material";
 export const ChatScreen = props => {
 
     const chat = props.chat;
+    const userType = props.userType;
 
     const getAllMessages = () => {
         //GET de mensajes del chat (buscar por id de chat)
@@ -80,28 +81,28 @@ export const ChatScreen = props => {
 
     const handleSend = e => {
         e.preventDefault();
-        const message = { contenido: input, enviado_por: "Comprador", chat: chat["id"] };
+        const message = { contenido: input, enviado_por: userType, chat: chat["id"] };
         postMessage(message);
         setMessages([...messages, message]);
         setInput('');
     }
 
     return(
-        <div className= 'chatScreen'>
+        <div className= 'ChatScreen'>
             {messages.map((message) =>
-                (message["enviado_por"] === "Vendedor") ? (
-                <div className= 'chatScreen_message'>
-                    <Avatar
-                        className = "chatScreen_image"
-                        alt = "asdf"//{message.name}
-                        src = ""//{message.image}
-                        />
-                    <p className = "chatScreen_text" > {message["contenido"]} {"; id de chat "} {chat.id} </p>
-                </div>
-            ): ( //enviado_por === Comprador
-                <div className= "chatScreen_message">
-                    <p className = "chatScreen_textUser" > {message["contenido"]} </p>
-                </div>
+                (message["enviado_por"] !==  userType) ? (      //mensajes recibidos
+                    <div className= 'chatScreen_message'>
+                        <Avatar
+                            className = "chatScreen_image"
+                            alt = "asdf"//{message.name}
+                            src = ""//{message.image}
+                            />
+                        <p className = "chatScreen_text" > {message["contenido"]} </p>
+                    </div>
+                ): ( //enviado_por === <userType> //mensajes enviados
+                    <div className= "chatScreen_message">
+                        <p className = "chatScreen_textUser" > {message["contenido"]} </p>
+                    </div>
                 )
             )}
 
@@ -114,7 +115,7 @@ export const ChatScreen = props => {
                     placeholder= 'Escribe un mensaje...'
                     type = "text"
                 />
-                <button onClick={handleSend} type="submit" className="chatScreen_inputButton">ENVIAR</button>
+                <button onClick={handleSend} type="submit" className="btn1">Enviar</button>
             </form>
 
         </div>

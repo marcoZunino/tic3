@@ -119,6 +119,8 @@
   transition: all 250ms ease-in-out;
   cursor: pointer;
   margin-bottom: 1em;
+  width: fit-content;
+  height: fit-content;
   &:hover {
     background-color: rgba(243, 101, 36, 0.7);
   }
@@ -137,6 +139,28 @@
   transition: all 250ms ease-in-out;
   cursor: pointer;
   margin-bottom: 1em;
+  &:hover {
+    background-color: rgba(243, 101, 36, 0.3);
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.btn3 {
+  font-size: 16px;
+  padding: 5px 20px;
+  background-color: #fff;
+  color: #f36424;
+  border-radius: 30px;
+  border-color: #f36424;
+  border-style: solid;
+ // transition: all 250ms ease-in-out;
+  cursor: pointer;
+  margin-bottom: 1em;
+  height: auto;
+  width: 30px;
+
   &:hover {
     background-color: rgba(243, 101, 36, 0.3);
   }
