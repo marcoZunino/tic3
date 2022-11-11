@@ -51,7 +51,6 @@ export const LikesView = props => {
     const askLogin = () => {
         setMsg('Acción no permitida, debe iniciar sesión');
 
-        //navigate("/");
     }
 
     const undoLike = (event) => {
@@ -113,9 +112,9 @@ export const LikesView = props => {
             })
     }
 
-    const deleteLike = (id_vehiculo) => {
+    const deleteLike = (vehicleId) => {
         //Parametros de la funcion DELETE
-        const params = { vehiculo: id_vehiculo, comprador: userId };
+        const params = { vehiculo: vehicleId, comprador: userId };
         const options = {
             method: 'DELETE',
             headers: {
@@ -143,12 +142,11 @@ export const LikesView = props => {
 
     }
 
-    // POST chat, luego abrirlo en la ventana de chats:
+    // abrir chat en la ventana de chats, crearlo si no existe:
     const openChat = (event) => {
-        let id_vehiculo = event.currentTarget.getAttribute('vehiculo');
-        let id_like = event.currentTarget.getAttribute('like');
-        verifyChatExists(id_like);
-        navigate('/home/chats', {state : {user: user, userId: userId, vehiculo: id_vehiculo}});
+        //const vehicleId = event.currentTarget.getAttribute('vehiculo');
+        const likeId = event.currentTarget.getAttribute('like');
+        verifyChatExists(likeId);
     }
 
     const verifyChatExists = (likeId) => {
@@ -161,12 +159,13 @@ export const LikesView = props => {
             .then(res => {
                 console.log("verify: ", res);
                 if (res["result"] === "true") {
-                    // return id de chat
-                    //setChatToOpen(res["data"]["id"])
+                    const chatId = res["data"]["id"];
+                    navigate('/home/chats', { state: { user: user, userId: userId, chatId: chatId } });
                 } else if (res["result"] === "false") {
-                    postChat(likeId);     // registrar vendedor
+                    postChat(likeId);     // registrar chat si no existe
                 } else {
                     setMsg("Unexpected error");
+
                 }
             });
 
@@ -190,7 +189,7 @@ export const LikesView = props => {
                 try {
                     console.log("like POST res:", res);
                     if (res.ok) {
-                        //setChatToOpen(res["data"]["id"])
+                        verifyChatExists(likeId);
                     } else {
                         setMsg("Error en chat")
                     }
@@ -305,7 +304,7 @@ export const LikesView = props => {
                         )}
                     </Button>
 
-                    <Button className="btnCont" onClick={openChat} size="large" vehiculo={thisVehicle["data_vehiculo"]["id"]}>
+                    <Button className="btnCont" onClick={openChat} size="large" like={thisVehicle["id"]}>
                         <ChatIcon className="chat-icon"/>
                     </Button>
 

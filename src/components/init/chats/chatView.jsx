@@ -22,14 +22,16 @@ import {ChatScreen} from "./chatScreen";
 import {ChatList} from "./chatList";
 import CloseIcon from "@mui/icons-material/Close";
 
-export const ChatView = props => {
+export const ChatView = () => {
 
-    let user = props.user;
-    let userId = props.userId;
+    let user;
+    let userId;
+    let chatId;
     const location = useLocation();
     if (location.state.user !== "") {
         user = location.state.user;
         userId = location.state.userId;
+        chatId = location.state.chatId;
     }
 
     const [open, setOpen] = useState(false);
@@ -42,6 +44,11 @@ export const ChatView = props => {
 
         //navigate("/");
     }
+
+    useEffect(() => {
+        console.log("id: ", chatId);
+        console.log("to show: ", chatToShow);
+    }, [chatId, chatToShow]);
 
     const navigate = useNavigate();
     const back = () => {
@@ -59,7 +66,22 @@ export const ChatView = props => {
 
                 if (res["result"] === "ok") {
                     setAllChats(res["data"]);   //array de chats
-                    setChatToShow(res["data"][0])   //set chatScreen al primero
+
+                    if (chatId === undefined) {
+                        try {
+                            setChatToShow(res["data"][0]);   //set chatScreen al primero
+                        } catch (e) {
+                            console.log(e.message);
+                        }
+                    } else {
+                        setChatToShow(res["data"].find(item => item["id"] === chatId));
+                        // for (let chat of allChats) {
+                        //     console.log("chat", chat);
+                        //     if (chat["id"] === chatId) {
+                        //         setChatToShow(chat);
+                        //     }
+                        // }
+                    }
 
                     // json de cada chat:
                     // chat {
