@@ -30,9 +30,11 @@
 }
 
 .chatScreen_timestamp{
-    text-align: center;
-    padding: 20px;
-    color: grey;
+    text-align: end;
+    margin-bottom: auto;
+    margin-top: auto;
+    font-size: 10px;
+    color: #000;
 }
 
 .chatScreen_textUser{

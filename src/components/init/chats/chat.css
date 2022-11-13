@@ -13,9 +13,16 @@ a{
 }
 .chat_details {
     flex: 1;
+    overflow-y: hidden;
 }
 .chat_info {
-    margin-bottom: -2%;
+    margin-bottom: -18px;
+    overflow-y: hidden;
+}
+
+.chat_message {
+    height: 25px;
+    overflow-y: hidden;
 }
 .chat_details >p {
     color: #f36424;

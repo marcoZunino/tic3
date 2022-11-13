@@ -87,6 +87,9 @@ export const ChatView = () => {
                     //        vendedor {
                     //                campos de vendedor
                     //        }
+                    //        mensaje {  //ultimo mensaje
+                    //                campos de mensaje
+                    //        }
                     // }
 
                 } else {

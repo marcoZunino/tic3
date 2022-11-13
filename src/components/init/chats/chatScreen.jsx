@@ -99,11 +99,17 @@ export const ChatScreen = props => {
                             alt = "perfil"//{message.name}
                             //src = ""//{message.image}
                             />
-                        <p className = "chatScreen_text" > {message["contenido"]} </p>
+                        <p className = "chatScreen_text" >
+                            {message["contenido"]}
+                            <p className = "chatScreen_timestamp"> {message["fechahora"]} </p>
+                        </p>
                     </div>
                 ): ( //enviado_por === <userType> //mensajes enviados
                     <div className= "chatScreen_message">
-                        <p className = "chatScreen_textUser" > {message["contenido"]} </p>
+                        <p className = "chatScreen_textUser" >
+                            {message["contenido"]}
+                            <p className = "chatScreen_timestamp"> {message["fechahora"]} </p>
+                        </p>
                     </div>
                 )
             )}

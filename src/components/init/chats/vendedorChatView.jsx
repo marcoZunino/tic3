@@ -86,6 +86,9 @@ export const VendedorChatView = () => {
                     //        comprador {
                     //                campos de comprador
                     //        }
+                    //        mensaje {  //ultimo mensaje
+                    //                campos de mensaje
+                    //        }
                     // }
 
                 } else {

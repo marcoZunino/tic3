@@ -3,9 +3,7 @@ import React from "react";
 
 export const Chat = props => {
 
-    const message = props.message;
     const profilePic = props.profilePic;
-    const timestamp = props.timestamp;
     const userType = props.userType;
 
     const chat = props.chat;
@@ -18,10 +16,13 @@ export const Chat = props => {
     //        calif_comprador
     //        vehiculo {
     //                campos de vehiculo
-    //            }
+    //        }
     //        !<userType> {
     //                campos de !<userType>
-    //            }
+    //        }
+    //        mensaje {  //ultimo mensaje
+    //                campos de mensaje
+    //        }
     //    }
 
     return (
@@ -39,9 +40,10 @@ export const Chat = props => {
                             <h2 className='chat_info'>{chat["comprador"]["first_name"]}{" "}{chat["comprador"]["last_name"]}</h2>
                         )}
                         <h3 className='chat_info'>{chat["vehiculo"]["marca"]}{" "}{chat["vehiculo"]["modelo"]}</h3>
-                        {/*<p>{message}</p>*/}
+
+                        <p className='chat_message'>{chat["mensaje"]["contenido"]}</p>
                     </div>
-                    <p className= 'chat_timestamp'>{timestamp}</p>
+                    <p className= 'chat_timestamp'>{chat["mensaje"]["fechahora"]}</p>
 
                 </div>
             </div>
