@@ -6,11 +6,13 @@ export const ChatList = props => {
 
     const chats = props.chats;
     const userType = props.userType;
+    const chatToShow = props.chatToShow;
 
     const setChatScreen = props.setChatScreen;
 
     useEffect(() => {
         console.log("chats:", chats);
+
     });
 
     return (
@@ -25,6 +27,7 @@ export const ChatList = props => {
                             //timestamp = 'Hace 30 segundos' //time last message
                             profilePic = "https://cdn-icons-png.flaticon.com/512/64/64572.png"
                             //profilePic = {`data:image/png;base64,${chat["vehiculo"]["imagen"]}`}
+                            selected = {chat["id"] === chatToShow["id"]}
                         />
                     </div>
                 )

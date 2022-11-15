@@ -26,12 +26,12 @@ export const VendedorChatView = () => {
 
     let user;
     let userId;
-    let chatId;
+    let vehicleId;
     const location = useLocation();
     if (location.state.user !== "") {
         user = location.state.user;
         userId = location.state.userId;
-        chatId = location.state.chatId;
+        vehicleId = location.state.vehicleId;
     }
 
     const [open, setOpen] = useState(false);
@@ -52,52 +52,90 @@ export const VendedorChatView = () => {
 
     const getAllChats = () => {
 
-        const params = { vendedor: userId , info_completa:"1"};
-        const url = `http://localhost:8000/api/chat?${new URLSearchParams(params)}`
-        fetch(url)
-            .then(data => data.json())
-            .then(res => {
-                console.log("Vendedor chats get result is:", res);
+        if (vehicleId === undefined) {
 
-                if (res["result"] === "ok") {
-                    setAllChats(res["data"]);   //array de chats
+            const params = {vendedor: userId, info_completa: "1"};
+            const url = `http://localhost:8000/api/chat?${new URLSearchParams(params)}`
+            fetch(url)
+                .then(data => data.json())
+                .then(res => {
+                    console.log("Vendedor chats get result is:", res);
 
-                    if (chatId === undefined) {
+                    if (res["result"] === "ok") {
+                        res["data"].sort(compareFn);
+                        setAllChats(res["data"]);   //array de chats
+                        setChatToShow(res["data"][0]);   //set chatScreen al primero
+
+                        // json de cada chat:
+                        // chat {
+                        //        id
+                        //        like
+                        //        fechahora
+                        //        calif_vendedor
+                        //        calif_comprador
+                        //        vehiculo {
+                        //                campos de vehiculo
+                        //                imagen
+                        //        }
+                        //        comprador {
+                        //                campos de comprador
+                        //        }
+                        //        mensaje {  //ultimo mensaje
+                        //                campos de mensaje
+                        //        }
+                        // }
+
+                    } else {
+                        console.log("error like");
+                        setMsg(res["result"]);
+                    }
+                })
+
+        } else {
+            const params = { vehiculo: vehicleId };
+            const url = `http://localhost:8000/api/chat?${new URLSearchParams(params)}`
+            fetch(url)
+                .then(data => data.json())
+                .then(res => {
+                    console.log("Vehiculo chats get result is:", res);
+
+                    if (res["result"] === "ok") {
+                        res["data"].sort(compareFn);
+                        setAllChats(res["data"]);   //array de chats
                         try {
                             setChatToShow(res["data"][0]);   //set chatScreen al primero
                         } catch (e) {
                             console.log(e.message);
                         }
+
+                        // json de cada chat:
+                        // chat {
+                        //        id
+                        //        like
+                        //        fechahora
+                        //        calif_vendedor
+                        //        calif_comprador
+                        //        vehiculo {
+                        //                campos de vehiculo
+                        //                imagen
+                        //        }
+                        //        comprador {
+                        //                campos de comprador
+                        //        }
+                        //        mensaje {  //ultimo mensaje
+                        //                campos de mensaje
+                        //        }
+                        // }
+
                     } else {
-                        setChatToShow(res["data"].find(item => item["id"] === chatId));
+                        console.log("error like");
+                        setMsg(res["result"]);
                     }
+                })
 
-                    // json de cada chat:
-                    // chat {
-                    //        id
-                    //        like
-                    //        fechahora
-                    //        calif_vendedor
-                    //        calif_comprador
-                    //        vehiculo {
-                    //                campos de vehiculo
-                    //                imagen
-                    //        }
-                    //        comprador {
-                    //                campos de comprador
-                    //        }
-                    //        mensaje {  //ultimo mensaje
-                    //                campos de mensaje
-                    //        }
-                    // }
-
-                } else {
-                    console.log("error like");
-                    setMsg(res["result"]);
-                }
-            })
-
+        }
     }
+    const compareFn = (chat1, chat2) => chat1["mensaje"]["fechahora"] > chat2["mensaje"]["fechahora"] ? -1 : 0;
 
     useEffect(() => {
         if (userId === undefined) {
@@ -244,14 +282,14 @@ export const VendedorChatView = () => {
                                 </button>
 
                                 <button type="button"
-                                        className="btn1"
+                                        className="btn2"
                                         onClick={showVendedorView}
                                 >
                                     Vendedor
                                 </button>
                             </div>
 
-                            <ChatList userType="vendedor" chats={allChats} setChatScreen={handleSetChatScreen}/>
+                            <ChatList userType="vendedor" chats={allChats} chatToShow={chatToShow} setChatScreen={handleSetChatScreen}/>
 
                         </div>
 

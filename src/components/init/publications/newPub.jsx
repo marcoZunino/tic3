@@ -67,7 +67,7 @@ export const NewPubView = props => {
 
     const postVehiculo = () => {
         console.log(imagen);
-        return;
+        //return;
         //setImagen(`http://localhost:3000/${imagen}`);
         //Parametros de la funcion POST
         const params = { vendedor: userId, marca: marca, modelo: modelo, tipo: tipo,
@@ -229,7 +229,7 @@ export const NewPubView = props => {
                                 <label htmlFor="tipo">Tipo</label>
                                 <input type="text"
                                        name="tipo"
-                                       placeholder="tipo"
+                                       placeholder="Venta/Alquiler"
                                        onChange={handleTipo}
                                 />
                             </div>

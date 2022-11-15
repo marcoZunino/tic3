@@ -93,6 +93,7 @@ export const InitialView = props => {
                 console.log("All vehicles data is:", res["data"]);
 
                 if (res["result"] === "ok") {
+                    res["data"].sort(() => Math.random() - 0.5); // orden random para mostrar los vehiculos
                     setAllVehicles(res["data"]); // todos los vehiculos
                     setVehicles(res["data"]);   // array solo de los vehiculos que se muestran
                 } else {

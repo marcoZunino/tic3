@@ -61,6 +61,7 @@ export const ChatView = () => {
                 console.log("Chats get result is:", res);
 
                 if (res["result"] === "ok") {
+                    res["data"].sort(compareFn);
                     setAllChats(res["data"]);   //array de chats
 
                     if (chatId === undefined) {
@@ -99,6 +100,8 @@ export const ChatView = () => {
             })
 
     }
+
+    const compareFn = (chat1, chat2) => chat1["mensaje"]["fechahora"] > chat2["mensaje"]["fechahora"] ? -1 : 0;
 
     useEffect(() => {
         if (userId === undefined) {
@@ -238,7 +241,7 @@ export const ChatView = () => {
 
                             <div>
                                 <button type="button"
-                                        className="btn1"
+                                        className="btn2"
                                         onClick={showCompradorView}
                                 >
                                     Comprador
@@ -252,7 +255,7 @@ export const ChatView = () => {
                                 </button>
                             </div>
 
-                            <ChatList userType="comprador" chats={allChats} setChatScreen={handleSetChatScreen}/>
+                            <ChatList userType="comprador" chats={allChats} chatToShow={chatToShow} setChatScreen={handleSetChatScreen}/>
 
                         </div>
 

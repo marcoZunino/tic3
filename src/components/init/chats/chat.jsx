@@ -1,10 +1,13 @@
 import {Avatar} from "@mui/material";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 export const Chat = props => {
 
     const profilePic = props.profilePic;
     const userType = props.userType;
+    const selected = props.selected;
+
+    const [className, setClassName] = useState('');
 
     const chat = props.chat;
     // json de cada chat:
@@ -25,12 +28,20 @@ export const Chat = props => {
     //        }
     //    }
 
+    useEffect(() => {
+        if (selected) {
+            setClassName('chat_selected');
+        } else {
+            setClassName('chat');
+        }
+    });
+
     return (
         chat && (chat["comprador"] || chat["vendedor"]) && (
         <div>
             {/*<Link to = {'/chat/${name}'}>*/}
             <div>
-                <div className='chat'>
+                <div className={className}>
                     <Avatar className = 'chat_images' src={profilePic} alt='chat_image' />
                     <div className= 'chat_details'>
                         { (userType === "comprador") && (

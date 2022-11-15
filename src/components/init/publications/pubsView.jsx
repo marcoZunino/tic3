@@ -1,7 +1,6 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import React, {useEffect, useState} from "react";
 import LogoutIcon from '@mui/icons-material/Logout';
-import EditIcon from '@mui/icons-material/Edit';
 import {useLocation, useNavigate} from "react-router-dom";
 import {
     AppBar,
@@ -78,8 +77,8 @@ export const PubsView = props => {
 
     const openChat = (event) => {
         // En chat habra que buscar todos los chats del vendedor y del vehiculo:
-        let id_vehiculo = event.currentTarget.getAttribute('vehiculo');
-        navigate('/home/chats', {state : {user : user, userId : userId, vehiculo: id_vehiculo}});
+        let vehicleId = event.currentTarget.getAttribute('vehiculo');
+        navigate('/home/chats/vendedor', {state : {user : user, userId : userId, vehicleId: vehicleId}});
         return null;
     }
 
